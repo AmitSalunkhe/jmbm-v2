@@ -4,6 +4,8 @@ import { auth, googleProvider } from '../firebase';
 import { signInWithPopup, signInWithRedirect } from 'firebase/auth';
 import { useAuth } from '../context/AuthContext';
 
+import InstallButton from '../components/InstallButton';
+
 const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -62,6 +64,8 @@ const Login = () => {
                     <p className="text-gray-600 text-center mb-8">
                         भजन, अभंग आणि संतांच्या वाणीचा अनुभव घ्या
                     </p>
+
+                    <InstallButton />
 
                     <button
                         onClick={handleGoogleLogin}
