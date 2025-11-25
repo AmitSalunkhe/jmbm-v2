@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --font-marathi: "Tiro Devanagari Marathi", serif;
+
+  --color-saffron-100: #fff5e6;
+  --color-saffron-500: #ff9933;
+  --color-saffron-600: #e67300;
+  --color-saffron-900: #804000;
+
+  --color-maroon: #800000;
+}
+
+body {
+  font-family: var(--font-marathi);
+  background-color: var(--color-saffron-100);
+  color: #333;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceSlow {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+.animate-bounce-slow {
+  animation: bounceSlow 2s ease-in-out infinite;
+}
