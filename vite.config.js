@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'जननी माता भजन मंडळ मोरावळे',
-        short_name: 'JMBM',
+        name: 'Abhangwani',
+        short_name: 'Abhangwani',
         description: 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव',
         theme_color: '#FF6B35',
         background_color: '#ffffff',

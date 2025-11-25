@@ -19,12 +19,24 @@ import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 
 function App() {
+  const [showSplash, setShowSplash] = React.useState(true);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showSplash) {
+    return <Splash />;
+  }
+
   return (
     <AuthProvider>
       <ToastProvider>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<Splash />} />
           <Route path="/login" element={<Login />} />
 
           {/* Protected Routes */}
