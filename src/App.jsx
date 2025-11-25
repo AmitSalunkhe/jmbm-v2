@@ -37,6 +37,7 @@ function App() {
       <ToastProvider>
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/login" element={<Login />} />
 
           {/* Protected Routes */}

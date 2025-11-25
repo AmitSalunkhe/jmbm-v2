@@ -1,45 +1,6 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { auth } from '../firebase';
-import { getRedirectResult } from 'firebase/auth';
+import React from 'react';
 
 const Splash = () => {
-    const navigate = useNavigate();
-    const { user, loading } = useAuth();
-
-    useEffect(() => {
-        // Check for redirect result from Google Sign-In
-        const checkRedirectResult = async () => {
-            try {
-                if (!auth.app) return;
-                const result = await getRedirectResult(auth);
-                if (result) {
-                    console.log('Login successful via redirect:', result.user);
-                    navigate('/home');
-                    return;
-                }
-            } catch (error) {
-                console.error('Redirect result error:', error);
-            }
-        };
-
-        checkRedirectResult();
-
-        // Auto-redirect after splash animation
-        const timer = setTimeout(() => {
-            if (!loading) {
-                if (user) {
-                    navigate('/home');
-                } else {
-                    navigate('/login');
-                }
-            }
-        }, 2500);
-
-        return () => clearTimeout(timer);
-    }, [user, loading, navigate]);
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-saffron-500 via-saffron-600 to-saffron-700 flex items-center justify-center">
             <div className="text-center animate-fade-in">
