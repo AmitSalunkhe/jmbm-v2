@@ -3,6 +3,9 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
 
 export const generateDailyContent = async () => {
     try {
+        if (!GEMINI_API_KEY) {
+            throw new Error('API Key Missing: VITE_GEMINI_API_KEY not found in environment variables');
+        }
         const prompt = `
 आज च्या दिवसासाठी खालील माहिती मराठी मध्ये द्या. कृपया संपूर्ण आणि तपशीलवार माहिती द्या.
 

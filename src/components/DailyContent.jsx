@@ -74,7 +74,7 @@ const DailyContent = () => {
             {error && (
                 <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                     <p className="text-xs text-yellow-800">
-                        टीप: काही तांत्रिक अडचण आली. डिफॉल्ट सामग्री दाखवली आहे.
+                        टीप: काही तांत्रिक अडचण आली. डिफॉल्ट सामग्री दाखवली आहे. ({error})
                     </p>
                 </div>
             )}
