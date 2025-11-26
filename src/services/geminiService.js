@@ -1,11 +1,31 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
+const MODEL_ID = 'gemini-1.5-flash';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ID}:generateContent`;
+
+export const testConnection = async () => {
+    try {
+        if (!GEMINI_API_KEY) return { success: false, error: 'API Key Missing' };
+
+        // List models to verify key and connectivity
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return { success: false, error: data.error?.message || `HTTP ${response.status}` };
+        }
+
+        return { success: true, models: data.models?.map(m => m.name) || [] };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+};
 
 export const generateDailyContent = async () => {
     try {
         if (!GEMINI_API_KEY) {
-            throw new Error('API Key Missing: VITE_GEMINI_API_KEY not found in environment variables');
+            throw new Error('API Key Missing: VITE_GEMINI_API_KEY not found');
         }
+
         const prompt = `
 आज च्या दिवसासाठी खालील माहिती मराठी मध्ये द्या. कृपया संपूर्ण आणि तपशीलवार माहिती द्या.
 
@@ -51,10 +71,16 @@ JSON format (फक्त हे उत्तर द्या, इतर का�
         });
 
         if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(`API Error ${response.status}: ${errorData.error?.message || response.statusText}`);
         }
 
         const data = await response.json();
+
+        if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+            throw new Error('Invalid API Response: No candidates found');
+        }
+
         const text = data.candidates[0].content.parts[0].text;
 
         // Extract JSON from response (remove markdown code blocks if present)
