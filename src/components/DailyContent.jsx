@@ -82,6 +82,31 @@ const DailyContent = () => {
 
             {/* Error message if any */}
             {error && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-xs text-yellow-800 font-semibold">
+                        टीप: काही तांत्रिक अडचण आली. डिफॉल्ट सामग्री दाखवली आहे.
+                    </p>
+                    <div className="mt-2 p-2 bg-white rounded border border-yellow-100 text-[10px] text-gray-500 font-mono break-all">
+                        <p className="font-bold text-red-500 mb-1">Error: {error}</p>
+                        {debugInfo ? (
+                            <div className="mt-2 border-t pt-2">
+                                <p className="font-bold text-blue-600">Available Models:</p>
+                                <pre className="whitespace-pre-wrap text-gray-600">
+                                    {debugInfo.success
+                                        ? debugInfo.models.join(', ')
+                                        : `Failed to list models: ${debugInfo.error}`}
+                                </pre>
+                            </div>
+                        ) : (
+                            <div className="mt-2 border-t pt-2 text-gray-500 italic">
+                                Checking available models...
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 };
 
-            export default DailyContent;
+export default DailyContent;
