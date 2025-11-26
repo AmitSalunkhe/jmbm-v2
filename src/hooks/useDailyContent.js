@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { generateDailyContent } from '../services/openaiService';
+import { generateDailyContent } from '../services/geminiService';
 
 const CACHE_KEY = 'dailyContent';
 
