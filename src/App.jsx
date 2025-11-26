@@ -19,14 +19,20 @@ import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 
 function App() {
-  const [showSplash, setShowSplash] = React.useState(true);
+  const [showSplash, setShowSplash] = React.useState(() => {
+    // Check if splash has already been shown in this session
+    return !sessionStorage.getItem('splashShown');
+  });
 
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, []);
+    if (showSplash) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+        sessionStorage.setItem('splashShown', 'true');
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [showSplash]);
 
   if (showSplash) {
     return <Splash />;
