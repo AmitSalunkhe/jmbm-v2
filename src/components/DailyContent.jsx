@@ -34,6 +34,7 @@ const DailyContent = () => {
             <div className="flex items-center gap-3 mb-4">
                 <Sparkles className="text-saffron-600" size={24} />
                 <h2 className="text-xl font-bold text-saffron-900">आजचा दिवस</h2>
+                <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400">Dev Mode</span>
             </div>
 
             {content && (
