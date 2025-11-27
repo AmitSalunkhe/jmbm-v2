@@ -84,18 +84,18 @@ const InlineSearch = ({ data, onFilter, placeholder = "शोधा..." }) => {
     return (
         <div className="mb-4 relative">
             <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-secondary)]" size={20} />
                 <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={placeholder}
-                    className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-saffron-500"
+                    className="w-full pl-10 pr-10 py-2 border border-[var(--color-border-sepia)] rounded-lg focus:outline-none focus:border-[var(--color-maroon-main)] focus:ring-1 focus:ring-[var(--color-maroon-main)] bg-[var(--color-paper-card)] text-[var(--color-ink-primary)] placeholder-[var(--color-ink-secondary)]/60 shadow-inner"
                 />
                 {searchQuery && (
                     <button
                         onClick={clearSearch}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-secondary)] hover:text-[var(--color-maroon-main)]"
                     >
                         <X size={20} />
                     </button>

@@ -11,7 +11,7 @@ const BhajanDetail = () => {
     const [bhajan, setBhajan] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isFav, setIsFav] = useState(false);
-    const [fontSize, setFontSize] = useState(18); // Default font size in px
+    const [fontSize, setFontSize] = useState(20); // Default font size slightly larger for reading
 
     useEffect(() => {
         const fetchBhajan = async () => {
@@ -72,71 +72,84 @@ const BhajanDetail = () => {
     };
 
     const increaseFontSize = () => setFontSize(prev => Math.min(prev + 2, 32));
-    const decreaseFontSize = () => setFontSize(prev => Math.max(prev - 2, 14));
+    const decreaseFontSize = () => setFontSize(prev => Math.max(prev - 2, 16));
 
-    if (loading) return <div className="p-8 text-center text-gray-500">लोड होत आहे...</div>;
+    if (loading) return <div className="p-8 text-center text-[var(--color-ink-secondary)] italic">पाने उलटत आहे...</div>;
     if (!bhajan) return null;
 
     return (
-        <div className="max-w-3xl mx-auto bg-white min-h-screen pb-20">
-            {/* Header */}
-            <div className="sticky top-0 bg-white z-10 border-b shadow-sm px-4 py-3 flex items-center justify-between">
-                <button onClick={() => navigate(-1)} className="text-gray-600 hover:text-saffron-600">
-                    <ChevronLeft size={24} />
+        <div className="max-w-3xl mx-auto min-h-screen pb-20 relative">
+            {/* Header - Sticky with Paper Texture */}
+            <div className="sticky top-0 bg-[var(--color-paper-base)] z-20 border-b-2 border-[var(--color-gold-accent)] px-4 py-3 flex items-center justify-between shadow-md">
+                <button onClick={() => navigate(-1)} className="text-[var(--color-maroon-main)] hover:text-[var(--color-saffron-muted)] transition-colors">
+                    <ChevronLeft size={28} strokeWidth={2.5} />
                 </button>
-                <h1 className="text-lg font-bold text-gray-800 truncate px-4">{bhajan.title}</h1>
-                <div className="w-6"></div> {/* Spacer for centering */}
+                <h1 className="text-xl font-bold text-[var(--color-maroon-main)] truncate px-4 drop-shadow-sm">{bhajan.title}</h1>
+                <div className="w-6"></div> {/* Spacer */}
             </div>
 
-            <div className="p-6 pb-32">
-                {/* Lyrics */}
-                <div
-                    className="whitespace-pre-line text-gray-800 leading-relaxed font-medium mb-8"
-                    style={{ fontSize: `${fontSize}px` }}
-                >
-                    {bhajan.lyrics}
-                </div>
+            <div className="p-4 pb-32">
+                {/* Main Content Card - The "Page" */}
+                <div className="bg-[var(--color-paper-card)] rounded-lg shadow-[0_4px_20px_rgba(62,39,35,0.15)] p-6 border-2 border-[var(--color-border-sepia)] relative overflow-hidden">
 
-                {/* Metadata Cards */}
-                <div className="grid grid-cols-2 gap-3 mb-6 text-sm">
-                    {bhajan.sant && (
-                        <div className="bg-saffron-50 p-3 rounded-lg border border-saffron-100">
-                            <span className="text-gray-500 block text-xs mb-1">संत</span>
-                            <span className="font-semibold text-saffron-800">{bhajan.sant}</span>
+                    {/* Decorative Corners */}
+                    <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-[var(--color-maroon-main)] rounded-tl-lg opacity-40"></div>
+                    <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-[var(--color-maroon-main)] rounded-tr-lg opacity-40"></div>
+                    <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-[var(--color-maroon-main)] rounded-bl-lg opacity-40"></div>
+                    <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-[var(--color-maroon-main)] rounded-br-lg opacity-40"></div>
+
+                    {/* Metadata Header */}
+                    <div className="flex justify-center gap-4 mb-8 text-sm border-b border-[var(--color-border-sepia)] border-dashed pb-4">
+                        {bhajan.sant && (
+                            <div className="flex items-center gap-1">
+                                <span className="text-[var(--color-ink-secondary)]">संत:</span>
+                                <span className="font-bold text-[var(--color-maroon-main)]">{bhajan.sant}</span>
+                            </div>
+                        )}
+                        <div className="text-[var(--color-gold-accent)]">•</div>
+                        <div className="flex items-center gap-1">
+                            <span className="text-[var(--color-ink-secondary)]">प्रकार:</span>
+                            <span className="font-bold text-[var(--color-maroon-main)]">{bhajan.category}</span>
                         </div>
-                    )}
-                    <div className="bg-saffron-50 p-3 rounded-lg border border-saffron-100">
-                        <span className="text-gray-500 block text-xs mb-1">प्रकार</span>
-                        <span className="font-semibold text-saffron-800">{bhajan.category}</span>
                     </div>
-                    {bhajan.subcategory && (
-                        <div className="bg-saffron-50 p-3 rounded-lg border border-saffron-100 col-span-2">
-                            <span className="text-gray-500 block text-xs mb-1">श्रेणी</span>
-                            <span className="font-semibold text-saffron-800">
-                                {Array.isArray(bhajan.subcategory) ? bhajan.subcategory.join(', ') : bhajan.subcategory}
-                            </span>
+
+                    {/* Lyrics - The "Shlok" */}
+                    <div className="relative mb-8">
+                        {/* Center decorative line */}
+                        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-[var(--color-maroon-main)] opacity-10 -translate-x-1/2"></div>
+
+                        <div
+                            className="whitespace-pre-line text-[var(--color-ink-primary)] leading-loose font-medium text-center relative z-10"
+                            style={{ fontSize: `${fontSize}px` }}
+                        >
+                            {bhajan.lyrics}
                         </div>
-                    )}
+                    </div>
+
+                    {/* Footer Decoration */}
+                    <div className="flex justify-center opacity-50">
+                        <span className="text-[var(--color-maroon-main)] text-xl">~ || राम कृष्ण हरी || ~</span>
+                    </div>
                 </div>
             </div>
 
-            {/* Controls Toolbar - Fixed Bottom above Nav */}
-            <div className="fixed bottom-16 left-0 right-0 bg-white border-t p-4 shadow-lg max-w-3xl mx-auto z-40">
-                <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border">
+            {/* Controls Toolbar - Wooden Style */}
+            <div className="fixed bottom-16 left-0 right-0 bg-[var(--color-paper-card)] border-t-2 border-[var(--color-border-sepia)] p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] max-w-3xl mx-auto z-40">
+                <div className="flex items-center justify-between bg-[var(--color-paper-base)] p-3 rounded-lg border border-[var(--color-border-sepia)]">
                     <div className="flex items-center gap-4">
-                        <button onClick={decreaseFontSize} className="p-2 bg-white rounded shadow-sm hover:bg-gray-100 text-gray-600">
+                        <button onClick={decreaseFontSize} className="p-2 bg-[var(--color-paper-card)] rounded shadow-sm border border-[var(--color-border-sepia)] text-[var(--color-ink-primary)] hover:bg-[var(--color-paper-base)]">
                             <Minus size={18} />
                         </button>
-                        <span className="text-sm font-medium text-gray-600">A</span>
-                        <button onClick={increaseFontSize} className="p-2 bg-white rounded shadow-sm hover:bg-gray-100 text-gray-600">
+                        <span className="text-sm font-bold text-[var(--color-ink-primary)]">A</span>
+                        <button onClick={increaseFontSize} className="p-2 bg-[var(--color-paper-card)] rounded shadow-sm border border-[var(--color-border-sepia)] text-[var(--color-ink-primary)] hover:bg-[var(--color-paper-base)]">
                             <Plus size={18} />
                         </button>
                     </div>
                     <div className="flex gap-3">
-                        <button onClick={toggleFavorite} className="p-2 bg-white rounded shadow-sm hover:bg-gray-100">
-                            <Heart size={20} className={isFav ? "fill-red-500 text-red-500" : "text-gray-400"} />
+                        <button onClick={toggleFavorite} className="p-2 bg-[var(--color-paper-card)] rounded shadow-sm border border-[var(--color-border-sepia)] hover:bg-[var(--color-paper-base)]">
+                            <Heart size={20} className={isFav ? "fill-red-500 text-red-500" : "text-[var(--color-ink-secondary)]"} />
                         </button>
-                        <button onClick={handleShare} className="p-2 bg-white rounded shadow-sm hover:bg-gray-100 text-blue-600">
+                        <button onClick={handleShare} className="p-2 bg-[var(--color-paper-card)] rounded shadow-sm border border-[var(--color-border-sepia)] hover:bg-[var(--color-paper-base)] text-[var(--color-maroon-main)]">
                             <Share2 size={20} />
                         </button>
                     </div>

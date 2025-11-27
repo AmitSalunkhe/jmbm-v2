@@ -24,27 +24,27 @@ const Home = () => {
             {/* 2. Upcoming Events (Admin Managed) */}
             <div>
                 <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="text-saffron-600" size={24} />
-                    <h2 className="text-xl font-bold text-gray-800">आगामी कार्यक्रम</h2>
+                    <Calendar className="text-[var(--color-maroon-main)]" size={24} />
+                    <h2 className="text-xl font-bold text-[var(--color-maroon-main)]">आगामी कार्यक्रम</h2>
                 </div>
                 {events.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100 text-gray-500 text-center">
+                    <div className="bg-[var(--color-paper-card)] rounded-lg shadow-sm p-4 border border-[var(--color-border-sepia)] text-[var(--color-ink-secondary)] text-center italic">
                         सध्या कोणतेही कार्यक्रम नाहीत.
                     </div>
                 ) : (
                     <div className="space-y-3">
                         {events.map(event => (
-                            <div key={event.id} className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+                            <div key={event.id} className="bg-[var(--color-paper-card)] rounded-lg shadow-sm p-4 border border-[var(--color-border-sepia)] hover:shadow-md transition-shadow">
                                 <div className="flex items-start space-x-4">
-                                    <div className="bg-saffron-100 text-saffron-900 rounded-lg p-2 text-center min-w-[60px]">
+                                    <div className="bg-[var(--color-paper-base)] text-[var(--color-maroon-main)] rounded-lg p-2 text-center min-w-[60px] border border-[var(--color-border-sepia)]">
                                         <span className="block text-xl font-bold">{new Date(event.date).getDate()}</span>
                                         <span className="text-xs font-medium">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-bold text-lg text-gray-800">{event.title}</h3>
-                                        <p className="text-gray-600 text-sm">{event.time}, {event.location}</p>
+                                        <h3 className="font-bold text-lg text-[var(--color-ink-primary)]">{event.title}</h3>
+                                        <p className="text-[var(--color-ink-secondary)] text-sm">{event.time}, {event.location}</p>
                                         {event.description && (
-                                            <p className="text-gray-500 text-sm mt-2">{event.description}</p>
+                                            <p className="text-[var(--color-ink-secondary)] text-sm mt-2 italic border-t border-[var(--color-border-sepia)] border-dotted pt-2">{event.description}</p>
                                         )}
                                     </div>
                                 </div>
@@ -59,27 +59,28 @@ const Home = () => {
 
             {/* 4. Bhajan Sangrah, 5. Tumche Avadte Abhang, 6. Contact */}
             <div className="grid grid-cols-2 gap-4">
-                <Link to="/bhajans" className="bg-gradient-to-br from-saffron-500 to-saffron-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow">
-                    <div className="flex flex-col items-center justify-center h-full">
-                        <Music size={32} className="mb-2" />
+                <Link to="/bhajans" className="bg-[var(--color-maroon-main)] rounded-lg p-6 text-white shadow-lg hover:shadow-xl transition-shadow border-2 border-[var(--color-gold-accent)] relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-black opacity-10 group-hover:opacity-0 transition-opacity"></div>
+                    <div className="flex flex-col items-center justify-center h-full relative z-10">
+                        <Music size={32} className="mb-2 text-[var(--color-gold-accent)]" />
                         <span className="text-xl font-bold mb-1">भजन संग्रह</span>
-                        <span className="text-sm opacity-90">सर्व अभंग पहा</span>
+                        <span className="text-sm opacity-90 text-[var(--color-paper-base)]">सर्व अभंग पहा</span>
                     </div>
                 </Link>
-                <Link to="/favorites" className="bg-white rounded-xl p-6 text-saffron-900 shadow-md border-2 border-saffron-200 hover:shadow-lg transition-shadow">
+                <Link to="/favorites" className="bg-[var(--color-paper-card)] rounded-lg p-6 text-[var(--color-maroon-main)] shadow-md border-2 border-[var(--color-border-sepia)] hover:border-[var(--color-maroon-main)] transition-colors">
                     <div className="flex flex-col items-center justify-center h-full">
-                        <Heart size={32} className="mb-2 text-red-500" />
+                        <Heart size={32} className="mb-2 text-[var(--color-maroon-light)]" />
                         <span className="text-xl font-bold mb-1">तुमचे आवडते</span>
-                        <span className="text-sm text-gray-600">आवडीचे अभंग</span>
+                        <span className="text-sm text-[var(--color-ink-secondary)]">आवडीचे अभंग</span>
                     </div>
                 </Link>
             </div>
 
             {/* Contact Button */}
-            <Link to="/about" className="block bg-gradient-to-r from-orange-500 to-saffron-500 rounded-xl p-5 text-white shadow-lg hover:shadow-xl transition-shadow">
+            <Link to="/about" className="block bg-[var(--color-paper-card)] rounded-lg p-5 text-[var(--color-ink-primary)] shadow-md border-2 border-[var(--color-border-sepia)] hover:bg-[var(--color-paper-base)] transition-colors">
                 <div className="flex items-center justify-center gap-3">
-                    <span className="text-lg font-bold">भजन मंडळाशी संपर्क साधा</span>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="text-lg font-bold text-[var(--color-maroon-main)]">भजन मंडळाशी संपर्क साधा</span>
+                    <svg className="w-5 h-5 text-[var(--color-maroon-main)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                 </div>

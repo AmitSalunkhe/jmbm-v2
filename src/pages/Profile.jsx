@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { auth, googleProvider } from '../firebase';
 import { signInWithPopup, signOut } from 'firebase/auth';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, LogOut } from 'lucide-react';
+import { ShieldCheck, LogOut, User } from 'lucide-react';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -31,34 +31,43 @@ const Profile = () => {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold text-saffron-900 mb-6">प्रोफाइल</h2>
+    <div className="p-4 space-y-6">
+      <div className="flex items-center gap-3 border-b-2 border-[var(--color-gold-accent)] pb-2">
+        <User className="text-[var(--color-maroon-main)]" size={28} />
+        <h2 className="text-2xl font-bold text-[var(--color-maroon-main)]">प्रोफाइल</h2>
+      </div>
 
       {user ? (
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+          {/* ID Card Style Profile */}
+          <div className="bg-[var(--color-paper-card)] p-6 rounded-lg shadow-md border-2 border-[var(--color-border-sepia)] relative overflow-hidden flex items-center space-x-6">
+            <div className="absolute top-0 left-0 w-full h-2 bg-[var(--color-maroon-main)]"></div>
+
             {user.photoURL ? (
-              <img src={user.photoURL} alt="Profile" className="w-16 h-16 rounded-full border-2 border-saffron-500" />
+              <img src={user.photoURL} alt="Profile" className="w-20 h-20 rounded-full border-4 border-[var(--color-paper-base)] shadow-sm" />
             ) : (
-              <div className="w-16 h-16 bg-saffron-200 rounded-full flex items-center justify-center text-saffron-700 font-bold text-2xl">
+              <div className="w-20 h-20 bg-[var(--color-paper-base)] rounded-full flex items-center justify-center text-[var(--color-maroon-main)] font-bold text-3xl border-2 border-[var(--color-border-sepia)]">
                 {user.displayName ? user.displayName[0] : 'U'}
               </div>
             )}
             <div>
-              <h3 className="text-xl font-bold text-gray-800">{user.displayName}</h3>
-              <p className="text-gray-500 text-sm">{user.email}</p>
+              <h3 className="text-xl font-bold text-[var(--color-ink-primary)]">{user.displayName}</h3>
+              <p className="text-[var(--color-ink-secondary)] text-sm italic">{user.email}</p>
+              <div className="mt-2 inline-block bg-[var(--color-paper-base)] px-3 py-1 rounded-full border border-[var(--color-border-sepia)] text-xs font-medium text-[var(--color-maroon-main)]">
+                सदस्य
+              </div>
             </div>
           </div>
 
           {/* Admin Section - Only visible to admin users */}
           {user.role === 'admin' && (
-            <div className="bg-saffron-50 p-4 rounded-lg border border-saffron-200">
-              <h3 className="font-bold text-saffron-900 mb-2 flex items-center">
-                <ShieldCheck size={20} className="mr-2" />
+            <div className="bg-[var(--color-paper-base)] p-5 rounded-lg border-2 border-[var(--color-gold-accent)] shadow-sm">
+              <h3 className="font-bold text-[var(--color-maroon-main)] mb-2 flex items-center text-lg">
+                <ShieldCheck size={24} className="mr-2" />
                 ॲडमिन क्षेत्र
               </h3>
-              <p className="text-sm text-gray-600 mb-3">येथून आपण नवीन भजन किंवा कार्यक्रम जोडू शकता.</p>
-              <Link to="/admin" className="block w-full bg-saffron-600 text-white text-center py-2 rounded hover:bg-saffron-700 font-bold">
+              <p className="text-sm text-[var(--color-ink-secondary)] mb-4">येथून आपण नवीन भजन किंवा कार्यक्रम जोडू शकता.</p>
+              <Link to="/admin" className="block w-full bg-[var(--color-maroon-main)] text-[var(--color-paper-base)] text-center py-3 rounded-lg hover:bg-[var(--color-maroon-light)] font-bold shadow-md transition-colors border border-[var(--color-border-sepia)]">
                 ॲडमिन पॅनेल उघडा
               </Link>
             </div>
@@ -66,22 +75,22 @@ const Profile = () => {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 py-3 rounded hover:bg-gray-200 transition"
+            className="w-full flex items-center justify-center space-x-2 bg-[var(--color-paper-card)] text-[var(--color-ink-primary)] py-3 rounded-lg border border-[var(--color-border-sepia)] hover:bg-[var(--color-paper-base)] transition shadow-sm"
           >
             <LogOut size={20} />
             <span>बाहेर पडा (Logout)</span>
           </button>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center h-64 bg-white rounded-lg shadow-sm p-8 text-center">
-          <div className="w-20 h-20 bg-saffron-100 rounded-full flex items-center justify-center mb-4 text-saffron-600">
-            <ShieldCheck size={40} />
+        <div className="flex flex-col items-center justify-center py-12 bg-[var(--color-paper-card)] rounded-lg shadow-sm border border-[var(--color-border-sepia)] text-center">
+          <div className="w-20 h-20 bg-[var(--color-paper-base)] rounded-full flex items-center justify-center mb-4 border border-[var(--color-border-sepia)]">
+            <ShieldCheck size={40} className="text-[var(--color-maroon-main)]" />
           </div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">स्वागत आहे!</h3>
-          <p className="text-gray-500 mb-6">ॲडमिन पॅनेल ॲक्सेस करण्यासाठी कृपया लॉगिन करा.</p>
+          <h3 className="text-xl font-bold text-[var(--color-ink-primary)] mb-2">स्वागत आहे!</h3>
+          <p className="text-[var(--color-ink-secondary)] mb-6 px-6">ॲडमिन पॅनेल ॲक्सेस करण्यासाठी कृपया लॉगिन करा.</p>
           <button
             onClick={handleLogin}
-            className="bg-white border border-gray-300 text-gray-700 py-2 px-6 rounded-full flex items-center space-x-2 hover:bg-gray-50 transition shadow-sm"
+            className="bg-white border border-[var(--color-border-sepia)] text-gray-700 py-3 px-8 rounded-full flex items-center space-x-3 hover:bg-gray-50 transition shadow-md"
           >
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
             <span>Google द्वारे लॉगिन करा</span>
