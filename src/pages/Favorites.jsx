@@ -1,32 +1,84 @@
 import React, { useEffect, useState } from 'react';
-import { Heart, Trash2 } from 'lucide-react';
+import { Heart, Trash2, LogIn } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { getFavorites, toggleFavorite } from '../services/firestoreService';
+import { useToast } from '../context/ToastContext';
+import { useNavigate } from 'react-router-dom';
 
 const Favorites = () => {
     const [favorites, setFavorites] = useState([]);
+    const { user } = useAuth();
+    const { showToast } = useToast();
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         loadFavorites();
-    }, []);
+    }, [user]);
 
-    const loadFavorites = () => {
-        const stored = localStorage.getItem('favoriteBhajans');
-        if (stored) {
-            setFavorites(JSON.parse(stored));
+    const loadFavorites = async () => {
+        setLoading(true);
+        if (user) {
+            // Load from Firestore
+            const data = await getFavorites(user.uid);
+            setFavorites(data);
+        } else {
+            // Load from LocalStorage
+            const stored = localStorage.getItem('favoriteBhajans');
+            if (stored) {
+                setFavorites(JSON.parse(stored));
+            } else {
+                setFavorites([]);
+            }
+        }
+        setLoading(false);
+    };
+
+    const removeFavorite = async (bhajan) => {
+        if (user) {
+            try {
+                await toggleFavorite(user.uid, bhajan);
+                // Refresh list
+                const updated = favorites.filter(b => b.id !== bhajan.id);
+                setFavorites(updated);
+                showToast('भजन आवडीतून काढले', 'success');
+            } catch (error) {
+                showToast('त्रुटी आली', 'error');
+            }
+        } else {
+            const updated = favorites.filter(b => b.id !== bhajan.id);
+            setFavorites(updated);
+            localStorage.setItem('favoriteBhajans', JSON.stringify(updated));
+            showToast('भजन आवडीतून काढले', 'success');
         }
     };
 
-    const removeFavorite = (bhajanId) => {
-        const updated = favorites.filter(b => b.id !== bhajanId);
-        setFavorites(updated);
-        localStorage.setItem('favoriteBhajans', JSON.stringify(updated));
-    };
-
-    const clearAllFavorites = () => {
+    const clearAllFavorites = async () => {
         if (window.confirm('तुम्हाला खात्री आहे की तुम्ही सर्व आवडीचे भजन हटवू इच्छिता?')) {
-            setFavorites([]);
-            localStorage.removeItem('favoriteBhajans');
+            if (user) {
+                // For Firestore, we'd need a batch delete or loop. 
+                // For now, let's just clear local state and show a message that it might take time
+                // Ideally, implement a clearFavorites function in service
+                for (const bhajan of favorites) {
+                    await toggleFavorite(user.uid, bhajan);
+                }
+                setFavorites([]);
+                showToast('सर्व आवडीचे भजन काढले', 'success');
+            } else {
+                setFavorites([]);
+                localStorage.removeItem('favoriteBhajans');
+                showToast('सर्व आवडीचे भजन काढले', 'success');
+            }
         }
     };
+
+    if (loading) {
+        return (
+            <div className="p-8 text-center text-[var(--color-ink-secondary)] italic">
+                लोड होत आहे...
+            </div>
+        );
+    }
 
     return (
         <div className="p-4 space-y-6">
@@ -44,6 +96,20 @@ const Favorites = () => {
                     </button>
                 )}
             </div>
+
+            {!user && (
+                <div className="bg-saffron-50 p-4 rounded-lg border border-saffron-200 mb-4 flex items-center justify-between">
+                    <div className="text-sm text-saffron-800">
+                        <strong>टीप:</strong> तुमचे आवडीचे भजन कायमस्वरूपी जतन करण्यासाठी कृपया लॉगिन करा.
+                    </div>
+                    <button
+                        onClick={() => navigate('/login')}
+                        className="flex items-center gap-1 bg-saffron-600 text-white px-3 py-1 rounded text-sm hover:bg-saffron-700"
+                    >
+                        <LogIn size={14} /> लॉगिन
+                    </button>
+                </div>
+            )}
 
             {favorites.length === 0 ? (
                 <div className="text-center py-12 bg-[var(--color-paper-card)] rounded-lg border border-[var(--color-border-sepia)] border-dashed">
@@ -72,7 +138,7 @@ const Favorites = () => {
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        removeFavorite(bhajan.id);
+                                        removeFavorite(bhajan);
                                     }}
                                     className="text-red-500 hover:text-red-700 p-1 hover:bg-red-50 rounded-full transition-colors"
                                 >
@@ -99,7 +165,7 @@ const Favorites = () => {
                 </div>
             )}
 
-            {favorites.length > 0 && (
+            {favorites.length > 0 && !user && (
                 <div className="mt-6 p-4 bg-[var(--color-paper-base)] rounded-lg border border-[var(--color-border-sepia)]">
                     <p className="text-sm text-[var(--color-ink-secondary)] italic text-center">
                         <strong>टीप:</strong> आवडीचे भजन तुमच्या डिव्हाइसवर स्थानिकरित्या संग्रहित केले जातात.

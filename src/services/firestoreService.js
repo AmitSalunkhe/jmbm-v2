@@ -619,3 +619,58 @@ export const deleteMember = async (id) => {
     }
 };
 
+
+// Favorites
+const FAVORITES_COLLECTION = 'favorites';
+
+export const toggleFavorite = async (userId, bhajan) => {
+    try {
+        if (!db.type) throw new Error("Firestore not initialized");
+        if (!userId) throw new Error("User ID required");
+
+        const favoriteRef = doc(db, USERS_COLLECTION, userId, FAVORITES_COLLECTION, bhajan.id);
+        const docSnap = await getDoc(favoriteRef);
+
+        if (docSnap.exists()) {
+            await deleteDoc(favoriteRef);
+            return false; // Removed
+        } else {
+            await setDoc(favoriteRef, {
+                ...bhajan,
+                addedAt: new Date()
+            });
+            return true; // Added
+        }
+    } catch (error) {
+        console.error("Error toggling favorite:", error);
+        throw error;
+    }
+};
+
+export const getFavorites = async (userId) => {
+    try {
+        if (!db.type) return [];
+        if (!userId) return [];
+
+        const q = query(collection(db, USERS_COLLECTION, userId, FAVORITES_COLLECTION), orderBy('addedAt', 'desc'));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error("Error fetching favorites:", error);
+        return [];
+    }
+};
+
+export const checkIsFavorite = async (userId, bhajanId) => {
+    try {
+        if (!db.type) return false;
+        if (!userId) return false;
+
+        const favoriteRef = doc(db, USERS_COLLECTION, userId, FAVORITES_COLLECTION, bhajanId);
+        const docSnap = await getDoc(favoriteRef);
+        return docSnap.exists();
+    } catch (error) {
+        console.error("Error checking favorite:", error);
+        return false;
+    }
+};

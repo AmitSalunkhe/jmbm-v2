@@ -1,81 +1,102 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getBhajanById } from '../services/firestoreService';
-import { Heart, Share2, ChevronLeft, Minus, Plus, Copy } from 'lucide-react';
+import { ChevronLeft, Heart, Share2, ZoomIn, ZoomOut, Copy } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
+import { toggleFavorite, checkIsFavorite } from '../services/firestoreService';
 
 const BhajanDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { showToast } = useToast();
     const [bhajan, setBhajan] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [isFav, setIsFav] = useState(false);
-    const [fontSize, setFontSize] = useState(20); // Default font size slightly larger for reading
+    const [fontSize, setFontSize] = useState(18); // Default font size
+    const [isFavorite, setIsFavorite] = useState(false);
+    const { showToast } = useToast();
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchBhajan = async () => {
             const data = await getBhajanById(id);
             if (data) {
                 setBhajan(data);
-                checkFavorite(data.id);
-            } else {
-                showToast('भजन सापडले नाही', 'error');
-                navigate('/bhajans');
+                checkFavoriteStatus(data.id);
             }
             setLoading(false);
         };
         fetchBhajan();
-    }, [id, navigate, showToast]);
+    }, [id, user]);
 
-    const checkFavorite = (bhajanId) => {
-        const stored = localStorage.getItem('favoriteBhajans');
-        if (stored) {
-            const favs = JSON.parse(stored);
-            setIsFav(favs.some(f => f.id === bhajanId));
+    const checkFavoriteStatus = async (bhajanId) => {
+        if (user) {
+            const status = await checkIsFavorite(user.uid, bhajanId);
+            setIsFavorite(status);
+        } else {
+            const stored = localStorage.getItem('favoriteBhajans');
+            if (stored) {
+                const favorites = JSON.parse(stored);
+                setIsFavorite(favorites.some(b => b.id === bhajanId));
+            }
         }
     };
 
-    const toggleFavorite = () => {
-        const stored = localStorage.getItem('favoriteBhajans');
-        let favs = stored ? JSON.parse(stored) : [];
+    const handleFavorite = async () => {
+        if (!bhajan) return;
 
-        if (isFav) {
-            favs = favs.filter(f => f.id !== bhajan.id);
-            showToast('आवडीच्या यादीतून काढले', 'info');
+        if (user) {
+            try {
+                const isAdded = await toggleFavorite(user.uid, bhajan);
+                setIsFavorite(isAdded);
+                showToast(isAdded ? 'भजन आवडीत जोडले' : 'भजन आवडीतून काढले', 'success');
+            } catch (error) {
+                showToast('त्रुटी आली', 'error');
+            }
         } else {
-            favs.push(bhajan);
-            showToast('आवडीच्या यादीत जोडले', 'success');
-        }
+            // LocalStorage Logic
+            let favorites = [];
+            const stored = localStorage.getItem('favoriteBhajans');
+            if (stored) favorites = JSON.parse(stored);
 
-        localStorage.setItem('favoriteBhajans', JSON.stringify(favs));
-        setIsFav(!isFav);
+            if (isFavorite) {
+                const updated = favorites.filter(b => b.id !== bhajan.id);
+                localStorage.setItem('favoriteBhajans', JSON.stringify(updated));
+                setIsFavorite(false);
+                showToast('भजन आवडीतून काढले', 'success');
+            } else {
+                const updated = [...favorites, bhajan];
+                localStorage.setItem('favoriteBhajans', JSON.stringify(updated));
+                setIsFavorite(true);
+                showToast('भजन आवडीत जोडले (स्थानिक)', 'success');
+            }
+        }
     };
 
     const handleShare = async () => {
-        const shareData = {
-            title: bhajan.title,
-            text: `${bhajan.title}\n\n${bhajan.lyrics}\n\n- ${bhajan.sant || 'अज्ञात'}`,
-            url: window.location.href
-        };
-
         if (navigator.share) {
             try {
-                await navigator.share(shareData);
-            } catch (err) {
-                console.error('Error sharing:', err);
+                await navigator.share({
+                    title: bhajan.title,
+                    text: `${bhajan.title}\n\n${bhajan.lyrics}\n\n- जननी माता भजन मंडळ App वरून सामायिक`,
+                    url: window.location.href
+                });
+            } catch (error) {
+                console.log('Error sharing:', error);
             }
         } else {
-            navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
-            showToast('लिंक क्लिपबोर्डवर कॉपी केली', 'success');
+            // Fallback to clipboard
+            navigator.clipboard.writeText(`${bhajan.title}\n\n${bhajan.lyrics}\n\n${window.location.href}`);
+            showToast('लिंक कॉपी केली', 'success');
         }
     };
 
-    const increaseFontSize = () => setFontSize(prev => Math.min(prev + 2, 32));
-    const decreaseFontSize = () => setFontSize(prev => Math.max(prev - 2, 16));
+    const handleCopy = () => {
+        navigator.clipboard.writeText(`${bhajan.title}\n\n${bhajan.lyrics}`);
+        showToast('भजन कॉपी केले', 'success');
+    };
 
-    if (loading) return <div className="p-8 text-center text-[var(--color-ink-secondary)] italic">पाने उलटत आहे...</div>;
-    if (!bhajan) return null;
+    if (loading) return <div className="text-center py-20 text-[var(--color-ink-secondary)] italic">लोड होत आहे...</div>;
+    if (!bhajan) return <div className="text-center py-20 text-[var(--color-ink-secondary)]">भजन सापडले नाही</div>;
 
     return (
         <div className="max-w-3xl mx-auto min-h-screen pb-20 relative">
@@ -100,22 +121,19 @@ const BhajanDetail = () => {
 
                     {/* Metadata Header */}
                     <div className="flex justify-center gap-4 mb-8 text-sm border-b border-[var(--color-border-sepia)] border-dashed pb-4">
+                        <span className="bg-[var(--color-paper-base)] px-3 py-1 rounded-full text-[var(--color-maroon-main)] font-bold border border-[var(--color-border-sepia)]">
+                            {bhajan.category}
+                        </span>
                         {bhajan.sant && (
-                            <div className="flex items-center gap-1">
-                                <span className="text-[var(--color-ink-secondary)]">संत:</span>
-                                <span className="font-bold text-[var(--color-maroon-main)]">{bhajan.sant}</span>
-                            </div>
+                            <span className="bg-[var(--color-paper-base)] px-3 py-1 rounded-full text-[var(--color-ink-secondary)] font-medium border border-[var(--color-border-sepia)]">
+                                {bhajan.sant}
+                            </span>
                         )}
-                        <div className="text-[var(--color-gold-accent)]">•</div>
-                        <div className="flex items-center gap-1">
-                            <span className="text-[var(--color-ink-secondary)]">प्रकार:</span>
-                            <span className="font-bold text-[var(--color-maroon-main)]">{bhajan.category}</span>
-                        </div>
                     </div>
 
                     {/* Lyrics - The "Shlok" */}
                     <div className="relative mb-8">
-                        {/* Center decorative line */}
+                        {/* Center Line Decoration */}
                         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-[var(--color-maroon-main)] opacity-10 -translate-x-1/2"></div>
 
                         <div
@@ -127,33 +145,62 @@ const BhajanDetail = () => {
                     </div>
 
                     {/* Footer Decoration */}
-                    <div className="flex justify-center opacity-50">
+                    <div className="flex justify-center opacity-60">
                         <span className="text-[var(--color-maroon-main)] text-xl">~ || राम कृष्ण हरी || ~</span>
                     </div>
                 </div>
             </div>
 
-            {/* Controls Toolbar - Wooden Style */}
-            <div className="fixed bottom-16 left-0 right-0 bg-[var(--color-paper-card)] border-t-2 border-[var(--color-border-sepia)] p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] max-w-3xl mx-auto z-40">
-                <div className="flex items-center justify-between bg-[var(--color-paper-base)] p-3 rounded-lg border border-[var(--color-border-sepia)]">
-                    <div className="flex items-center gap-4">
-                        <button onClick={decreaseFontSize} className="p-2 bg-[var(--color-paper-card)] rounded shadow-sm border border-[var(--color-border-sepia)] text-[var(--color-ink-primary)] hover:bg-[var(--color-paper-base)]">
-                            <Minus size={18} />
-                        </button>
-                        <span className="text-sm font-bold text-[var(--color-ink-primary)]">A</span>
-                        <button onClick={increaseFontSize} className="p-2 bg-[var(--color-paper-card)] rounded shadow-sm border border-[var(--color-border-sepia)] text-[var(--color-ink-primary)] hover:bg-[var(--color-paper-base)]">
-                            <Plus size={18} />
-                        </button>
-                    </div>
-                    <div className="flex gap-3">
-                        <button onClick={toggleFavorite} className="p-2 bg-[var(--color-paper-card)] rounded shadow-sm border border-[var(--color-border-sepia)] hover:bg-[var(--color-paper-base)]">
-                            <Heart size={20} className={isFav ? "fill-red-500 text-red-500" : "text-[var(--color-ink-secondary)]"} />
-                        </button>
-                        <button onClick={handleShare} className="p-2 bg-[var(--color-paper-card)] rounded shadow-sm border border-[var(--color-border-sepia)] hover:bg-[var(--color-paper-base)] text-[var(--color-maroon-main)]">
-                            <Share2 size={20} />
-                        </button>
-                    </div>
-                </div>
+            {/* Bottom Toolbar - Floating */}
+            <div className="fixed bottom-6 left-4 right-4 max-w-3xl mx-auto bg-[var(--color-paper-base)]/95 backdrop-blur-sm border border-[var(--color-border-sepia)] rounded-full shadow-lg p-2 flex justify-around items-center z-30">
+                <button
+                    onClick={() => setFontSize(Math.max(14, fontSize - 2))}
+                    className="p-3 text-[var(--color-ink-secondary)] hover:text-[var(--color-maroon-main)] active:scale-95 transition-transform"
+                    title="फॉन्ट कमी करा"
+                >
+                    <ZoomOut size={24} />
+                </button>
+
+                <div className="w-px h-8 bg-[var(--color-border-sepia)] opacity-50"></div>
+
+                <button
+                    onClick={handleFavorite}
+                    className={`p-3 rounded-full transition-all active:scale-95 ${isFavorite ? 'text-red-500 bg-red-50' : 'text-[var(--color-ink-secondary)] hover:text-[var(--color-maroon-main)]'
+                        }`}
+                    title="आवडीत जोडा"
+                >
+                    <Heart size={28} fill={isFavorite ? "currentColor" : "none"} />
+                </button>
+
+                <div className="w-px h-8 bg-[var(--color-border-sepia)] opacity-50"></div>
+
+                <button
+                    onClick={handleCopy}
+                    className="p-3 text-[var(--color-ink-secondary)] hover:text-[var(--color-maroon-main)] active:scale-95 transition-transform"
+                    title="कॉपी करा"
+                >
+                    <Copy size={24} />
+                </button>
+
+                <div className="w-px h-8 bg-[var(--color-border-sepia)] opacity-50"></div>
+
+                <button
+                    onClick={handleShare}
+                    className="p-3 text-[var(--color-ink-secondary)] hover:text-[var(--color-maroon-main)] active:scale-95 transition-transform"
+                    title="शेअर करा"
+                >
+                    <Share2 size={24} />
+                </button>
+
+                <div className="w-px h-8 bg-[var(--color-border-sepia)] opacity-50"></div>
+
+                <button
+                    onClick={() => setFontSize(Math.min(32, fontSize + 2))}
+                    className="p-3 text-[var(--color-ink-secondary)] hover:text-[var(--color-maroon-main)] active:scale-95 transition-transform"
+                    title="फॉन्ट वाढवा"
+                >
+                    <ZoomIn size={24} />
+                </button>
             </div>
         </div>
     );
