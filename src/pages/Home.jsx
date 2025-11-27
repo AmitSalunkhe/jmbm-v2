@@ -34,17 +34,20 @@ const Home = () => {
                 ) : (
                     <div className="space-y-3">
                         {events.map(event => (
-                            <div key={event.id} className="bg-[var(--color-paper-card)] rounded-lg shadow-sm p-4 border border-[var(--color-border-sepia)] hover:shadow-md transition-shadow">
-                                <div className="flex items-start space-x-4">
-                                    <div className="bg-[var(--color-paper-base)] text-[var(--color-maroon-main)] rounded-lg p-2 text-center min-w-[60px] border border-[var(--color-border-sepia)]">
+                            <div key={event.id} className="bg-[var(--color-paper-card)] rounded-lg shadow-sm p-4 border-l-4 border-[var(--color-maroon-main)] border-y border-r border-[var(--color-border-sepia)] hover:shadow-md transition-shadow relative overflow-hidden">
+                                {/* Decorative Corner */}
+                                <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[var(--color-gold-accent)] rounded-tr-lg opacity-50"></div>
+
+                                <div className="flex items-start space-x-4 relative z-10">
+                                    <div className="bg-[var(--color-paper-base)] text-[var(--color-maroon-main)] rounded-lg p-2 text-center min-w-[60px] border border-[var(--color-border-sepia)] shadow-sm">
                                         <span className="block text-xl font-bold">{new Date(event.date).getDate()}</span>
-                                        <span className="text-xs font-medium">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
+                                        <span className="text-xs font-medium uppercase">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
                                     </div>
                                     <div className="flex-1">
                                         <h3 className="font-bold text-lg text-[var(--color-ink-primary)]">{event.title}</h3>
-                                        <p className="text-[var(--color-ink-secondary)] text-sm">{event.time}, {event.location}</p>
+                                        <p className="text-[var(--color-ink-secondary)] text-sm mb-1">{event.time}, {event.location}</p>
                                         {event.description && (
-                                            <p className="text-[var(--color-ink-secondary)] text-sm mt-2 italic border-t border-[var(--color-border-sepia)] border-dotted pt-2">{event.description}</p>
+                                            <p className="text-[var(--color-ink-secondary)] text-sm mt-2 italic border-t border-[var(--color-border-sepia)] border-dotted pt-2 opacity-90">{event.description}</p>
                                         )}
                                     </div>
                                 </div>

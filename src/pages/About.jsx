@@ -57,7 +57,7 @@ const About = () => {
                         <User size={24} />
                         सभासद
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                         {members.map(member => (
                             <div key={member.id} className="bg-[var(--color-paper-card)] p-4 rounded-lg shadow-sm border border-[var(--color-border-sepia)] text-center hover:border-[var(--color-maroon-main)] transition-colors relative overflow-hidden group">
                                 <div className="absolute top-0 left-0 w-full h-1 bg-[var(--color-gold-accent)]"></div>

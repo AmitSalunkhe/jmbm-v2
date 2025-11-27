@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getBhajans } from '../services/firestoreService';
-import { Search, Heart, Share2 } from 'lucide-react';
+import { Search, Heart, Share2, Music } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import InlineSearch from '../components/InlineSearch';
 import { useAuth } from '../context/AuthContext';
@@ -103,49 +103,55 @@ const Bhajans = () => {
 
   return (
     <div className="p-4 space-y-4 pb-20">
-      <h2 className="text-2xl font-bold text-[var(--color-maroon-main)] mb-4 text-center border-b-2 border-[var(--color-gold-accent)] pb-2 inline-block w-full">
-        अभंग सूची
-      </h2>
+      <div className="flex items-center gap-3 border-b-2 border-[var(--color-gold-accent)] pb-2 mb-4">
+        <Music className="text-[var(--color-maroon-main)]" size={28} />
+        <h2 className="text-2xl font-bold text-[var(--color-maroon-main)]">अभंग सूची</h2>
+      </div>
 
       <InlineSearch data={bhajans} onFilter={setFilteredBhajans} placeholder="अभंग शोधा..." />
 
       {loading ? (
         <div className="text-center py-8 text-[var(--color-ink-secondary)] italic">लोड होत आहे...</div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredBhajans.map((bhajan, index) => (
             <div
               key={bhajan.id}
               onClick={() => window.location.href = `/bhajan/${bhajan.id}`}
-              className="bg-[var(--color-paper-card)] p-4 rounded-lg shadow-sm border border-[var(--color-border-sepia)] hover:border-[var(--color-maroon-main)] transition-all cursor-pointer flex justify-between items-start group relative overflow-hidden"
+              className="bg-[var(--color-paper-card)] p-5 rounded-lg shadow-sm border-l-4 border-[var(--color-maroon-main)] relative cursor-pointer hover:shadow-md transition-all border-y border-r border-[var(--color-border-sepia)] flex flex-col justify-between min-h-[150px]"
             >
-              {/* Decorative Index Number */}
-              <div className="absolute -left-2 -top-2 w-8 h-8 bg-[var(--color-paper-base)] rounded-full border border-[var(--color-border-sepia)] flex items-center justify-center text-[10px] text-[var(--color-ink-secondary)] font-bold opacity-50">
-                {index + 1}
-              </div>
+              {/* Decorative Corner */}
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--color-gold-accent)] rounded-tr-lg opacity-50"></div>
 
-              <div className="flex-1 pr-4 pl-2">
-                <h3 className="font-bold text-lg text-[var(--color-ink-primary)] mb-1 group-hover:text-[var(--color-maroon-main)] transition-colors">
-                  {bhajan.title}
-                </h3>
-                <div className="flex flex-wrap gap-2 text-xs">
-                  <span className="bg-[var(--color-paper-base)] text-[var(--color-maroon-main)] px-2 py-0.5 rounded border border-[var(--color-border-sepia)] font-medium">
+              <div>
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-lg font-bold text-[var(--color-ink-primary)] pr-8 line-clamp-2 leading-tight group-hover:text-[var(--color-maroon-main)] transition-colors">
+                    {bhajan.title}
+                  </h3>
+                </div>
+
+                <div className="text-sm space-y-1 mb-3 border-b border-[var(--color-border-sepia)] border-dotted pb-2">
+                  <p className="text-[var(--color-maroon-main)] font-medium text-xs uppercase tracking-wide">
                     {bhajan.category}
-                  </span>
+                  </p>
                   {bhajan.sant && (
-                    <span className="text-[var(--color-ink-secondary)] italic flex items-center">
-                      - {bhajan.sant}
-                    </span>
+                    <p className="text-[var(--color-ink-secondary)] italic text-xs">
+                      संत: {bhajan.sant}
+                    </p>
                   )}
                 </div>
+
+                <p className="text-[var(--color-ink-secondary)] whitespace-pre-line line-clamp-2 text-sm italic opacity-80 mb-4">
+                  {bhajan.lyrics}
+                </p>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex justify-end gap-2 mt-auto pt-2 border-t border-[var(--color-border-sepia)] border-opacity-30">
                 <button
                   onClick={(e) => handleFavorite(e, bhajan)}
                   className={`p-2 rounded-full transition-colors ${favorites.includes(bhajan.id)
-                      ? 'text-red-500 bg-red-50'
-                      : 'text-[var(--color-ink-secondary)] hover:bg-[var(--color-paper-base)]'
+                    ? 'text-red-500 bg-red-50'
+                    : 'text-[var(--color-ink-secondary)] hover:bg-[var(--color-paper-base)] hover:text-[var(--color-maroon-main)]'
                     }`}
                 >
                   <Heart size={20} fill={favorites.includes(bhajan.id) ? "currentColor" : "none"} />
@@ -161,7 +167,7 @@ const Bhajans = () => {
           ))}
 
           {filteredBhajans.length === 0 && (
-            <div className="text-center py-8 text-[var(--color-ink-secondary)]">
+            <div className="col-span-full text-center py-8 text-[var(--color-ink-secondary)]">
               कोणतेही भजन सापडले नाही
             </div>
           )}

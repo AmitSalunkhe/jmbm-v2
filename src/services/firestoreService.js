@@ -79,6 +79,17 @@ export const getBhajanById = async (id) => {
 export const addBhajan = async (bhajanData) => {
     try {
         if (!db.type) throw new Error("Firestore not initialized");
+
+        // Check for duplicate title
+        const allBhajans = await getBhajans();
+        const duplicate = allBhajans.find(b =>
+            b.title.trim().toLowerCase() === bhajanData.title.trim().toLowerCase()
+        );
+
+        if (duplicate) {
+            throw new Error(`हे भजन आधीच अस्तित्वात आहे: "${duplicate.title}"`);
+        }
+
         await addDoc(collection(db, BHAJAN_COLLECTION), {
             ...bhajanData,
             createdAt: new Date()
@@ -182,6 +193,18 @@ export const getEventById = async (id) => {
 export const addEvent = async (eventData) => {
     try {
         if (!db.type) throw new Error("Firestore not initialized");
+
+        // Check for duplicate event (same title and date)
+        const allEvents = await getAllEvents();
+        const duplicate = allEvents.find(e =>
+            e.title.trim().toLowerCase() === eventData.title.trim().toLowerCase() &&
+            e.date === eventData.date
+        );
+
+        if (duplicate) {
+            throw new Error(`हा कार्यक्रम या तारखेला आधीच अस्तित्वात आहे: "${duplicate.title}" (${duplicate.date})`);
+        }
+
         const eventsRef = collection(db, EVENTS_COLLECTION);
         const docRef = await addDoc(eventsRef, {
             ...eventData,
@@ -244,6 +267,17 @@ export const getSaints = async () => {
 export const addSant = async (santData) => {
     try {
         if (!db.type) throw new Error("Firestore not initialized");
+
+        // Check for duplicate name
+        const allSaints = await getSaints();
+        const duplicate = allSaints.find(s =>
+            s.name.trim().toLowerCase() === santData.name.trim().toLowerCase()
+        );
+
+        if (duplicate) {
+            throw new Error(`हा संत आधीच अस्तित्वात आहे: "${duplicate.name}"`);
+        }
+
         await addDoc(collection(db, SAINTS_COLLECTION), {
             ...santData,
             createdAt: new Date()
@@ -302,6 +336,17 @@ export const getBhajanTypes = async () => {
 export const addBhajanType = async (typeData) => {
     try {
         if (!db.type) throw new Error("Firestore not initialized");
+
+        // Check for duplicate name
+        const allTypes = await getBhajanTypes();
+        const duplicate = allTypes.find(t =>
+            t.name.trim().toLowerCase() === typeData.name.trim().toLowerCase()
+        );
+
+        if (duplicate) {
+            throw new Error(`हा प्रकार आधीच अस्तित्वात आहे: "${duplicate.name}"`);
+        }
+
         await addDoc(collection(db, BHAJAN_TYPES_COLLECTION), {
             ...typeData,
             createdAt: new Date()
@@ -360,6 +405,18 @@ export const getCategories = async () => {
 export const addCategory = async (categoryData) => {
     try {
         if (!db.type) throw new Error("Firestore not initialized");
+
+        // Check for duplicate name within same bhajan type
+        const allCategories = await getCategories();
+        const duplicate = allCategories.find(c =>
+            c.name.trim().toLowerCase() === categoryData.name.trim().toLowerCase() &&
+            c.bhajanTypeId === categoryData.bhajanTypeId
+        );
+
+        if (duplicate) {
+            throw new Error(`ही श्रेणी आधीच अस्तित्वात आहे: "${duplicate.name}"`);
+        }
+
         await addDoc(collection(db, CATEGORIES_COLLECTION), {
             ...categoryData,
             createdAt: new Date()
@@ -418,6 +475,17 @@ export const getLabels = async () => {
 export const addLabel = async (labelData) => {
     try {
         if (!db.type) throw new Error("Firestore not initialized");
+
+        // Check for duplicate name
+        const allLabels = await getLabels();
+        const duplicate = allLabels.find(l =>
+            l.name.trim().toLowerCase() === labelData.name.trim().toLowerCase()
+        );
+
+        if (duplicate) {
+            throw new Error(`हे लेबल आधीच अस्तित्वात आहे: "${duplicate.name}"`);
+        }
+
         await addDoc(collection(db, LABELS_COLLECTION), {
             ...labelData,
             createdAt: new Date()
@@ -558,66 +626,7 @@ export const updateAppSettings = async (settingsData) => {
     }
 };
 
-// Members
-export const getMembers = async () => {
-    try {
-        if (cache.members) return cache.members;
 
-        if (!db.type) return [];
-        const q = query(collection(db, MEMBERS_COLLECTION), orderBy('order'));
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        cache.members = data;
-        return data;
-    } catch (error) {
-        console.error("Error fetching members:", error);
-        return [];
-    }
-};
-
-export const addMember = async (memberData) => {
-    try {
-        if (!db.type) throw new Error("Firestore not initialized");
-        const membersRef = collection(db, MEMBERS_COLLECTION);
-        const docRef = await addDoc(membersRef, {
-            ...memberData,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        });
-        clearCache('members');
-        return docRef.id;
-    } catch (error) {
-        console.error("Error adding member:", error);
-        throw error;
-    }
-};
-
-export const updateMember = async (id, memberData) => {
-    try {
-        if (!db.type) throw new Error("Firestore not initialized");
-        const memberRef = doc(db, MEMBERS_COLLECTION, id);
-        await updateDoc(memberRef, {
-            ...memberData,
-            updatedAt: new Date().toISOString()
-        });
-        clearCache('members');
-    } catch (error) {
-        console.error("Error updating member:", error);
-        throw error;
-    }
-};
-
-export const deleteMember = async (id) => {
-    try {
-        if (!db.type) throw new Error("Firestore not initialized");
-        const memberRef = doc(db, MEMBERS_COLLECTION, id);
-        await deleteDoc(memberRef);
-        clearCache('members');
-    } catch (error) {
-        console.error("Error deleting member:", error);
-        throw error;
-    }
-};
 
 
 // Favorites
@@ -672,5 +681,74 @@ export const checkIsFavorite = async (userId, bhajanId) => {
     } catch (error) {
         console.error("Error checking favorite:", error);
         return false;
+    }
+};
+
+// Members
+export const getMembers = async () => {
+    try {
+        if (cache.members) return cache.members;
+
+        if (!db.type) return [];
+        const q = query(collection(db, MEMBERS_COLLECTION), orderBy('order'));
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        cache.members = data;
+        return data;
+    } catch (error) {
+        console.error("Error fetching members:", error);
+        return [];
+    }
+};
+
+export const addMember = async (memberData) => {
+    try {
+        if (!db.type) throw new Error("Firestore not initialized");
+
+        // Check for duplicate name
+        const allMembers = await getMembers();
+        const duplicate = allMembers.find(m =>
+            m.name.trim().toLowerCase() === memberData.name.trim().toLowerCase()
+        );
+
+        if (duplicate) {
+            throw new Error(`हा सदस्य आधीच अस्तित्वात आहे: "${duplicate.name}"`);
+        }
+
+        await addDoc(collection(db, MEMBERS_COLLECTION), {
+            ...memberData,
+            createdAt: new Date()
+        });
+        clearCache('members');
+    } catch (error) {
+        console.error("Error adding member:", error);
+        throw error;
+    }
+};
+
+export const updateMember = async (id, memberData) => {
+    try {
+        if (!db.type) throw new Error("Firestore not initialized");
+        const memberRef = doc(db, MEMBERS_COLLECTION, id);
+        await setDoc(memberRef, {
+            ...memberData,
+            updatedAt: new Date()
+        }, { merge: true });
+        clearCache('members');
+    } catch (error) {
+        console.error("Error updating member:", error);
+        throw error;
+    }
+};
+
+export const deleteMember = async (id) => {
+    try {
+        if (!db.type) throw new Error("Firestore not initialized");
+        const memberRef = doc(db, MEMBERS_COLLECTION, id);
+        await deleteDoc(memberRef);
+        clearCache('members');
+    } catch (error) {
+        console.error("Error deleting member:", error);
+        throw error;
     }
 };

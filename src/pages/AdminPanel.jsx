@@ -598,17 +598,20 @@ const AdminPanel = () => {
 
     return (
         <div className="p-4 max-w-7xl mx-auto pb-24">
-            <div className="flex justify-between items-center mb-6 border-b-2 border-[var(--color-gold-accent)] pb-2">
+            <div className="mb-6 border-b-2 border-[var(--color-gold-accent)] pb-2">
                 <h2 className="text-2xl font-bold text-[var(--color-maroon-main)]">ॲडमिन पॅनेल</h2>
-                {activeTab !== 'users' && activeTab !== 'settings' && activeTab !== 'events' && activeTab !== 'members' && (
+            </div>
+
+            <TabNavigation tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+
+            {activeTab !== 'users' && activeTab !== 'settings' && activeTab !== 'events' && activeTab !== 'members' && (
+                <div className="mb-4 flex justify-end">
                     <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 bg-[var(--color-maroon-main)] text-[var(--color-paper-base)] px-4 py-2 rounded hover:bg-[var(--color-maroon-light)] shadow-sm font-bold">
                         {showForm ? <X size={20} /> : <Plus size={20} />}
                         {showForm ? 'रद्द करा' : 'नवीन जोडा'}
                     </button>
-                )}
-            </div>
-
-            <TabNavigation tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+                </div>
+            )}
 
             {activeTab === 'events' ? (
                 <Events />

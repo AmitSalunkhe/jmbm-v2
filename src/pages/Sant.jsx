@@ -66,20 +66,23 @@ const Sant = () => {
                         <p className="text-[var(--color-ink-secondary)]">या संताची भजने अद्याप उपलब्ध नाहीत</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                         {santBhajans.map((bhajan) => (
                             <div
                                 key={bhajan.id}
                                 onClick={() => window.location.href = `/bhajan/${bhajan.id}`}
-                                className="bg-[var(--color-paper-card)] p-4 rounded-lg shadow-sm border-l-4 border-[var(--color-maroon-main)] cursor-pointer hover:shadow-md transition-all border-y border-r border-[var(--color-border-sepia)]"
+                                className="bg-[var(--color-paper-card)] p-5 rounded-lg shadow-sm border-l-4 border-[var(--color-maroon-main)] cursor-pointer hover:shadow-md transition-all border-y border-r border-[var(--color-border-sepia)] relative overflow-hidden"
                             >
-                                <h4 className="text-lg font-bold text-[var(--color-ink-primary)] mb-2">{bhajan.title}</h4>
-                                <div className="text-sm space-y-1 mb-3">
-                                    <p className="text-[var(--color-maroon-main)] font-medium">{bhajan.category}
-                                        {bhajan.subcategory && <span className="text-[var(--color-ink-secondary)] font-normal"> • {Array.isArray(bhajan.subcategory) ? bhajan.subcategory.join(', ') : bhajan.subcategory}</span>}
+                                {/* Decorative Corner */}
+                                <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--color-gold-accent)] rounded-tr-lg opacity-50"></div>
+
+                                <h4 className="text-lg font-bold text-[var(--color-ink-primary)] mb-2 pr-6">{bhajan.title}</h4>
+                                <div className="text-sm space-y-1 mb-3 border-b border-[var(--color-border-sepia)] border-dotted pb-2">
+                                    <p className="text-[var(--color-maroon-main)] font-medium text-xs uppercase tracking-wide">{bhajan.category}
+                                        {bhajan.subcategory && <span className="text-[var(--color-ink-secondary)] font-normal normal-case"> • {Array.isArray(bhajan.subcategory) ? bhajan.subcategory.join(', ') : bhajan.subcategory}</span>}
                                     </p>
                                 </div>
-                                <p className="text-[var(--color-ink-secondary)] whitespace-pre-line line-clamp-2 text-sm bg-[var(--color-paper-base)] p-2 rounded border border-[var(--color-border-sepia)] border-opacity-50 italic">
+                                <p className="text-[var(--color-ink-secondary)] whitespace-pre-line line-clamp-2 text-sm italic opacity-80">
                                     {bhajan.lyrics}
                                 </p>
                             </div>
@@ -110,28 +113,31 @@ const Sant = () => {
                     </p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                     {saints.map((sant) => (
                         <div
                             key={sant.id}
                             onClick={() => handleSantClick(sant)}
-                            className="bg-[var(--color-paper-card)] p-4 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer border-l-4 border-[var(--color-maroon-main)] border-y border-r border-[var(--color-border-sepia)] group"
+                            className="bg-[var(--color-paper-card)] p-5 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer border-l-4 border-[var(--color-maroon-main)] border-y border-r border-[var(--color-border-sepia)] group relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between">
+                            {/* Decorative Corner */}
+                            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--color-gold-accent)] rounded-tr-lg opacity-50"></div>
+
+                            <div className="flex items-center justify-between relative z-10">
                                 <div className="flex items-center space-x-4">
-                                    <div className="w-14 h-14 bg-[var(--color-paper-base)] rounded-full flex items-center justify-center border border-[var(--color-border-sepia)] shadow-sm group-hover:border-[var(--color-maroon-main)] transition-colors">
-                                        <User size={28} className="text-[var(--color-maroon-main)]" />
+                                    <div className="w-16 h-16 bg-[var(--color-paper-base)] rounded-full flex items-center justify-center border-2 border-[var(--color-border-sepia)] shadow-sm group-hover:border-[var(--color-maroon-main)] transition-colors">
+                                        <User size={32} className="text-[var(--color-maroon-main)]" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-[var(--color-ink-primary)] group-hover:text-[var(--color-maroon-main)] transition-colors">{sant.name}</h3>
+                                        <h3 className="text-xl font-bold text-[var(--color-ink-primary)] group-hover:text-[var(--color-maroon-main)] transition-colors">{sant.name}</h3>
                                         {sant.description && (
-                                            <p className="text-sm text-[var(--color-ink-secondary)] line-clamp-1 italic">
+                                            <p className="text-sm text-[var(--color-ink-secondary)] line-clamp-1 italic mt-1">
                                                 {sant.description}
                                             </p>
                                         )}
                                     </div>
                                 </div>
-                                <ChevronRight size={20} className="text-[var(--color-ink-secondary)] group-hover:text-[var(--color-maroon-main)]" />
+                                <ChevronRight size={24} className="text-[var(--color-ink-secondary)] group-hover:text-[var(--color-maroon-main)]" />
                             </div>
                         </div>
                     ))}

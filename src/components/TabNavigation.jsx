@@ -2,18 +2,23 @@ import React from 'react';
 
 const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
     return (
-        <div className="border-b border-gray-200 mb-6">
-            <div className="flex overflow-x-auto">
+        <div className="mb-6">
+            <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <style>{`
+                    .scrollbar-hide::-webkit-scrollbar {
+                        display: none;
+                    }
+                `}</style>
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => onTabChange(tab.id)}
-                        className={`px-4 py-3 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id
-                                ? 'border-saffron-600 text-saffron-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        className={`px-4 py-3 rounded-lg font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2 border-2 ${activeTab === tab.id
+                            ? 'bg-[var(--color-maroon-main)] text-[var(--color-paper-base)] border-[var(--color-maroon-main)] shadow-md'
+                            : 'bg-[var(--color-paper-card)] text-[var(--color-ink-secondary)] border-[var(--color-border-sepia)] hover:border-[var(--color-maroon-main)] hover:text-[var(--color-maroon-main)]'
                             }`}
                     >
-                        {tab.icon && <span className="mr-2">{tab.icon}</span>}
+                        {tab.icon && <span>{tab.icon}</span>}
                         {tab.label}
                     </button>
                 ))}

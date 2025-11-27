@@ -152,7 +152,7 @@ const BhajanDetail = () => {
             </div>
 
             {/* Bottom Toolbar - Floating */}
-            <div className="fixed bottom-6 left-4 right-4 max-w-3xl mx-auto bg-[var(--color-paper-base)]/95 backdrop-blur-sm border border-[var(--color-border-sepia)] rounded-full shadow-lg p-2 flex justify-around items-center z-30">
+            <div className="fixed bottom-20 left-4 right-4 max-w-3xl mx-auto bg-[var(--color-paper-base)]/95 backdrop-blur-sm border border-[var(--color-border-sepia)] rounded-full shadow-lg p-2 flex justify-around items-center z-30">
                 <button
                     onClick={() => setFontSize(Math.max(14, fontSize - 2))}
                     className="p-3 text-[var(--color-ink-secondary)] hover:text-[var(--color-maroon-main)] active:scale-95 transition-transform"
