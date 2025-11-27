@@ -576,7 +576,13 @@ export const getAppSettings = async () => {
             instagramUrl: '',
             youtubeUrl: '',
             twitterUrl: '',
-            whatsappNumber: ''
+            whatsappNumber: '',
+            // Branding fields
+            appTitle: 'जननी माता भजन मंडळ मोरावळे',
+            appDescription: 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव',
+            faviconUrl: '/vite.svg',
+            appIcon192: '/pwa-icon.svg',
+            appIcon512: '/pwa-icon.svg'
         };
         const snapshot = await getDocs(collection(db, SETTINGS_COLLECTION));
         let data;
@@ -596,7 +602,13 @@ export const getAppSettings = async () => {
                 instagramUrl: '',
                 youtubeUrl: '',
                 twitterUrl: '',
-                whatsappNumber: ''
+                whatsappNumber: '',
+                // Branding fields
+                appTitle: 'जननी माता भजन मंडळ मोरावळे',
+                appDescription: 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव',
+                faviconUrl: '/vite.svg',
+                appIcon192: '/pwa-icon.svg',
+                appIcon512: '/pwa-icon.svg'
             };
         } else {
             const docSnap = snapshot.docs[0];

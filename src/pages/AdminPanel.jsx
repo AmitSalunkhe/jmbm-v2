@@ -6,7 +6,7 @@ import {
     getCategories, addCategory, updateCategory, deleteCategory,
     getLabels, addLabel, updateLabel, deleteLabel,
     getUsers, updateUserRole,
-    getAppSettings, updateAppSettings,
+
     getAllEvents, addEvent, updateEvent, deleteEvent,
     getMembers, addMember, updateMember, deleteMember
 } from '../services/firestoreService';
@@ -16,6 +16,7 @@ import TabNavigation from '../components/TabNavigation';
 import ConfirmDialog from '../components/ConfirmDialog';
 import Events from './admin/Events';
 import Members from './admin/Members';
+import AppSettings from './admin/AppSettings';
 
 const AdminPanel = () => {
     const { showToast } = useToast();
@@ -33,8 +34,8 @@ const AdminPanel = () => {
     const [labels, setLabels] = useState([]);
     const [users, setUsers] = useState([]);
     const [events, setEvents] = useState([]);
-    const [members, setMembers] = useState([]);
-    const [appSettings, setAppSettings] = useState(null);
+
+
 
     // Form data
     const [formData, setFormData] = useState({});
@@ -85,9 +86,7 @@ const AdminPanel = () => {
                 case 'users':
                     setUsers(await getUsers());
                     break;
-                case 'settings':
-                    setAppSettings(await getAppSettings());
-                    break;
+
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -152,9 +151,7 @@ const AdminPanel = () => {
             case 'labels':
                 await updateLabel(editingItem.id, data);
                 break;
-            case 'settings':
-                await updateAppSettings(data);
-                break;
+
         }
         showToast('यशस्वीरित्या अपडेट केले!', 'success');
     };
@@ -188,8 +185,7 @@ const AdminPanel = () => {
                 bhajanTypeId: item.bhajanTypeId || '',
                 description: item.description || ''
             });
-        } else if (activeTab === 'settings') {
-            setFormData(item);
+
         }
         setShowForm(true);
     };
@@ -366,94 +362,7 @@ const AdminPanel = () => {
                             <textarea placeholder="वर्णन" value={formData.description || ''} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows="2" className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]" />
                         </>
                     )}
-                    {activeTab === 'settings' && (
-                        <>
-                            <div className="space-y-4">
-                                <h3 className="font-bold text-lg text-[var(--color-maroon-main)] border-b border-[var(--color-border-sepia)] pb-2">अॅप सेटिंग्ज</h3>
-                                <input type="text" placeholder="अॅप नाव" value={formData.appName || ''} onChange={(e) => setFormData({ ...formData, appName: e.target.value })} className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]" />
-                                <input type="text" placeholder="स्प्लॅश स्क्रीन मजकूर" value={formData.splashText || ''} onChange={(e) => setFormData({ ...formData, splashText: e.target.value })} className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]" />
-                                <textarea placeholder="लॉगिन संदेश" value={formData.loginMessage || ''} onChange={(e) => setFormData({ ...formData, loginMessage: e.target.value })} rows="2" className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]" />
-                                <input type="color" value={formData.primaryColor || '#FF6B35'} onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })} className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]" />
-                                <label className="flex items-center space-x-2 text-[var(--color-ink-primary)]">
-                                    <input type="checkbox" checked={formData.enableRegistration || false} onChange={(e) => setFormData({ ...formData, enableRegistration: e.target.checked })} />
-                                    <span>नोंदणी सक्षम करा</span>
-                                </label>
-                                <label className="flex items-center space-x-2 text-[var(--color-ink-primary)]">
-                                    <input type="checkbox" checked={formData.maintenanceMode || false} onChange={(e) => setFormData({ ...formData, maintenanceMode: e.target.checked })} />
-                                    <span>देखभाल मोड</span>
-                                </label>
-                            </div>
 
-                            <div className="space-y-4 mt-6">
-                                <h3 className="font-bold text-lg text-[var(--color-maroon-main)] border-b border-[var(--color-border-sepia)] pb-2">संपर्क पृष्ठ</h3>
-                                <input
-                                    type="text"
-                                    placeholder="पृष्ठ शीर्षक"
-                                    value={formData.aboutTitle || ''}
-                                    onChange={(e) => setFormData({ ...formData, aboutTitle: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
-                                />
-                                <textarea
-                                    placeholder="पृष्ठ वर्णन (मजकूर)"
-                                    value={formData.aboutDescription || ''}
-                                    onChange={(e) => setFormData({ ...formData, aboutDescription: e.target.value })}
-                                    rows="6"
-                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
-                                />
-                                <p className="text-xs text-[var(--color-ink-secondary)]">हे मजकूर "भजन मंडळाशी संपर्क साधा" पृष्ठावर दिसेल.</p>
-                            </div>
-
-                            <div className="space-y-4 mt-6">
-                                <h3 className="font-bold text-lg text-[var(--color-maroon-main)] border-b border-[var(--color-border-sepia)] pb-2">संपर्क माहिती</h3>
-                                <input
-                                    type="tel"
-                                    placeholder="मोबाईल नंबर"
-                                    value={formData.contactPhone || ''}
-                                    onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
-                                />
-                                <input
-                                    type="email"
-                                    placeholder="ईमेल (Optional)"
-                                    value={formData.contactEmail || ''}
-                                    onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
-                                />
-                            </div>
-
-                            <div className="space-y-4 mt-6">
-                                <h3 className="font-bold text-lg text-[var(--color-maroon-main)] border-b border-[var(--color-border-sepia)] pb-2">सोशल मीडिया</h3>
-                                <input
-                                    type="url"
-                                    placeholder="Facebook URL"
-                                    value={formData.facebookUrl || ''}
-                                    onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
-                                />
-                                <input
-                                    type="url"
-                                    placeholder="Instagram URL"
-                                    value={formData.instagramUrl || ''}
-                                    onChange={(e) => setFormData({ ...formData, instagramUrl: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
-                                />
-                                <input
-                                    type="url"
-                                    placeholder="YouTube URL"
-                                    value={formData.youtubeUrl || ''}
-                                    onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
-                                />
-                                <input
-                                    type="tel"
-                                    placeholder="WhatsApp Number (Optional)"
-                                    value={formData.whatsappNumber || ''}
-                                    onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
-                                />
-                            </div>
-                        </>
-                    )}
                     <div className="flex gap-3">
                         <button type="submit" className="bg-[var(--color-maroon-main)] text-[var(--color-paper-base)] px-6 py-2 rounded hover:bg-[var(--color-maroon-light)] font-bold">{editingItem ? 'अपडेट करा' : 'जोडा'}</button>
                         <button type="button" onClick={resetForm} className="bg-[var(--color-paper-base)] text-[var(--color-ink-primary)] px-6 py-2 rounded hover:bg-[var(--color-paper-card)] border border-[var(--color-border-sepia)]">रद्द करा</button>
@@ -494,24 +403,7 @@ const AdminPanel = () => {
                 break;
         }
 
-        if (activeTab === 'settings') {
-            return appSettings && (
-                <div className="bg-[var(--color-paper-card)] p-6 rounded-lg shadow-md border border-[var(--color-border-sepia)]">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-xl font-bold text-[var(--color-maroon-main)]">अॅप सेटिंग्ज</h3>
-                        <button onClick={() => handleEdit(appSettings)} className="text-blue-600 hover:text-blue-800 font-medium">संपादित करा</button>
-                    </div>
-                    <div className="space-y-3 text-[var(--color-ink-primary)]">
-                        <div><strong>अॅप नाव:</strong> {appSettings.appName}</div>
-                        <div><strong>स्प्लॅश मजकूर:</strong> {appSettings.splashText}</div>
-                        <div><strong>लॉगिन संदेश:</strong> {appSettings.loginMessage}</div>
-                        <div><strong>प्राथमिक रंग:</strong> <span className="inline-block w-6 h-6 rounded border border-gray-300 align-middle ml-2" style={{ backgroundColor: appSettings.primaryColor }}></span> {appSettings.primaryColor}</div>
-                        <div><strong>नोंदणी:</strong> {appSettings.enableRegistration ? 'सक्षम' : 'अक्षम'}</div>
-                        <div><strong>देखभाल मोड:</strong> {appSettings.maintenanceMode ? 'चालू' : 'बंद'}</div>
-                    </div>
-                </div>
-            );
-        }
+
 
         return (
             <div className="bg-[var(--color-paper-card)] rounded-lg shadow-md overflow-hidden border border-[var(--color-border-sepia)]">
@@ -617,6 +509,8 @@ const AdminPanel = () => {
                 <Events />
             ) : activeTab === 'members' ? (
                 <Members />
+            ) : activeTab === 'settings' ? (
+                <AppSettings />
             ) : (
                 <>
                     {showForm && renderForm()}

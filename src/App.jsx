@@ -18,7 +18,11 @@ import Favorites from './pages/Favorites';
 import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 
+import { useAppSettings } from './hooks/useAppSettings';
+
 function App() {
+  useAppSettings(); // Apply app settings (title, favicon)
+
   const [showSplash, setShowSplash] = React.useState(() => {
     // Check if splash has already been shown in this session
     return !sessionStorage.getItem('splashShown');

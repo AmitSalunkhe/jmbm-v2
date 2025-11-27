@@ -102,7 +102,7 @@ const Login = () => {
 
                     <div className="mt-8 pt-6 border-t border-[var(--color-border-sepia)] opacity-50">
                         <p className="text-sm text-[var(--color-ink-primary)] text-center font-semibold">
-                            || विठ्ठल विठ्ठल विठोबा हरी ॐ ||
+                            || रामकृष्णहरी माऊली ||
                         </p>
                     </div>
                 </div>

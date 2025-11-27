@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { getAuth, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "firebase/auth";
 
 const firebaseConfig = {
@@ -15,6 +16,7 @@ const firebaseConfig = {
 let app;
 let db;
 let auth;
+let storage;
 let googleProvider;
 
 try {
@@ -24,15 +26,15 @@ try {
     app = initializeApp(firebaseConfig);
     db = getFirestore(app);
     auth = getAuth(app);
+    storage = getStorage(app);
     googleProvider = new GoogleAuthProvider();
 } catch (error) {
     console.error("Firebase Initialization Error:", error);
     // Mock objects to prevent app crash on load
     db = {};
     auth = {};
+    storage = {};
     googleProvider = {};
 }
 
-
-
-export { db, auth, googleProvider, setPersistence, browserLocalPersistence };
+export { db, auth, storage, googleProvider, setPersistence, browserLocalPersistence };
