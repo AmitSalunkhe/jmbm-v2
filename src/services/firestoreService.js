@@ -579,6 +579,7 @@ export const getAppSettings = async () => {
             whatsappNumber: '',
             // Branding fields
             appTitle: 'अभंगमाला',
+            appSubtitle: 'भजन मंडळ मोरावळे',
             appDescription: 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव',
             faviconUrl: '/vite.svg',
             appIcon192: '/pwa-icon.svg',
@@ -605,6 +606,7 @@ export const getAppSettings = async () => {
                 whatsappNumber: '',
                 // Branding fields
                 appTitle: 'अभंगमाला',
+                appSubtitle: 'भजन मंडळ मोरावळे',
                 appDescription: 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव',
                 faviconUrl: '/vite.svg',
                 appIcon192: '/pwa-icon.svg',

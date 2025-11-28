@@ -5,7 +5,7 @@ import { useAppSettings } from '../hooks/useAppSettings';
 const Splash = () => {
     const settings = useAppSettings();
 
-    const appTitle = settings?.appTitle || 'जननी माता भजन मंडळ';
+    const appTitle = settings?.appTitle || 'जननी माता भजन मंडळ, मोरावळे.';
     const appIcon = settings?.appIcon512 || null;
 
     return (
@@ -25,10 +25,10 @@ const Splash = () => {
                 <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center relative">
                     <div className="absolute inset-0 bg-[var(--color-maroon-main)] rounded-full opacity-10 animate-pulse"></div>
                     <div className="w-28 h-28 border-4 border-[var(--color-maroon-main)] rounded-full flex items-center justify-center bg-[var(--color-paper-card)] shadow-xl animate-scale-in overflow-hidden">
-                        {appIcon ? (
-                            <img src={appIcon} alt="App Icon" className="w-full h-full object-cover" />
+                        {settings?.appIcon192 ? (
+                            <img src={settings.appIcon192} alt="App Logo" className="w-full h-full object-cover" />
                         ) : (
-                            <span className="text-5xl filter drop-shadow-sm">🙏</span>
+                            <span className="text-4xl">🙏</span>
                         )}
                     </div>
                 </div>
@@ -40,13 +40,13 @@ const Splash = () => {
 
                 {/* Subtitle */}
                 <p className="text-xl text-[var(--color-ink-secondary)] font-medium animate-slide-up-delay border-b-2 border-[var(--color-gold-accent)] inline-block pb-1 px-4">
-                    मोरावळे
+                    {settings?.appSubtitle || 'मोरावळे'}
                 </p>
 
                 {/* Footer Mantra */}
                 <div className="mt-12">
                     <p className="text-[var(--color-ink-primary)] text-lg font-semibold animate-pulse tracking-wider">
-                        || विठ्ठल विठ्ठल विठोबा हरी ॐ ||
+                        || रामकृष्णहरी माऊली ||
                     </p>
                 </div>
             </div>

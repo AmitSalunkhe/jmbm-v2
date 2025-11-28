@@ -67,7 +67,7 @@ const Login = () => {
                         {settings?.appTitle || 'जननी माता भजन मंडळ'}
                     </h1>
                     <p className="text-[var(--color-ink-secondary)] font-medium border-b border-[var(--color-gold-accent)] inline-block pb-1">
-                        मोरावळे
+                        {settings?.appSubtitle || 'मोरावळे'}
                     </p>
                 </div>
 

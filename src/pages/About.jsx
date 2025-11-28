@@ -40,10 +40,10 @@ const About = () => {
             <div className="bg-[var(--color-paper-card)] p-6 rounded-lg shadow-md border-2 border-[var(--color-border-sepia)] relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-[var(--color-paper-base)] to-transparent opacity-50"></div>
                 <h3 className="text-xl font-bold text-[var(--color-ink-primary)] mb-4 border-b border-[var(--color-border-sepia)] border-dotted pb-2 inline-block">
-                    {settings?.aboutTitle || 'जननी माता भजन मंडळ'}
+                    {settings?.aboutTitle || 'जननी माता भजन मंडळ, मोरावळे.'}
                 </h3>
                 <p className="text-[var(--color-ink-primary)] leading-loose whitespace-pre-line font-medium">
-                    {settings?.aboutDescription || 'जननी माता भजन मंडळ, मोरावळे.\n\nआमचे उद्दिष्ट वारकरी संप्रदायाचा प्रसार करणे आणि गावात भक्तीमय वातावरण निर्माण करणे हे आहे.'}
+                    {settings?.aboutDescription || 'आमचे उद्दिष्ट वारकरी संप्रदायाचा प्रसार करणे आणि गावात भक्तीमय वातावरण निर्माण करणे हे आहे.'}
                 </p>
                 <div className="flex justify-center mt-6">
                     <span className="text-[var(--color-maroon-main)] opacity-60">~ || राम कृष्ण हरी || ~</span>

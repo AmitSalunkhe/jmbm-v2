@@ -8,6 +8,7 @@ const AppSettings = () => {
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState({
         appTitle: '',
+        appSubtitle: '',
         appDescription: '',
         faviconUrl: '',
         appIcon192: '',
@@ -110,6 +111,21 @@ const AppSettings = () => {
                                 placeholder="उदा. जननी माता भजन मंडळ"
                             />
                             <p className="text-xs text-[var(--color-ink-secondary)] mt-1">हे ब्राउझर टॅबवर आणि होम स्क्रीनवर दिसेल.</p>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--color-ink-primary)] mb-1">
+                                उपशीर्षक / स्थान (Subtitle / Location)
+                            </label>
+                            <input
+                                type="text"
+                                name="appSubtitle"
+                                value={settings.appSubtitle}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-[var(--color-border-sepia)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--color-maroon-main)] bg-[var(--color-paper-base)]"
+                                placeholder="उदा. भजन मंडळ मोरावळे"
+                            />
+                            <p className="text-xs text-[var(--color-ink-secondary)] mt-1">हे हेडर आणि स्प्लॅश स्क्रीनवर दिसेल.</p>
                         </div>
 
                         <div>
