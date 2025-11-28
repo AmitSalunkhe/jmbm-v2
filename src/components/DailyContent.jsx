@@ -38,7 +38,11 @@ const DailyContent = () => {
             <div className="flex items-center gap-3 mb-4 border-b border-[var(--color-gold-accent)] pb-2">
                 <Sparkles className="text-[var(--color-maroon-main)]" size={24} />
                 <h2 className="text-xl font-bold text-[var(--color-maroon-main)]">आजचा दिवस</h2>
-                <span className="bg-blue-100 text-blue-800 text-[10px] font-medium px-2 py-0.5 rounded border border-blue-400 ml-auto">Dev Mode</span>
+                {content?.isFallback && (
+                    <span className="bg-gray-100 text-gray-600 text-[10px] font-medium px-2 py-0.5 rounded border border-gray-300 ml-auto">
+                        Offline Mode
+                    </span>
+                )}
             </div>
 
             {content && (
