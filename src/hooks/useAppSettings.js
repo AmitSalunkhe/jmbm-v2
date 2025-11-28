@@ -29,8 +29,8 @@ export const useAppSettings = () => {
 
                     // Update PWA Manifest
                     const manifest = {
-                        name: data.appTitle || 'जननी माता भजन मंडळ मोरावळे',
-                        short_name: data.appTitle || 'JMBM',
+                        name: data.appTitle || 'अभंगमाला',
+                        short_name: data.appTitle || 'अभंगमाला',
                         description: data.appDescription || 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव',
                         start_url: '/',
                         display: 'standalone',

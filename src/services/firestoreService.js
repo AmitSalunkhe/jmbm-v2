@@ -578,7 +578,7 @@ export const getAppSettings = async () => {
             twitterUrl: '',
             whatsappNumber: '',
             // Branding fields
-            appTitle: 'जननी माता भजन मंडळ मोरावळे',
+            appTitle: 'अभंगमाला',
             appDescription: 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव',
             faviconUrl: '/vite.svg',
             appIcon192: '/pwa-icon.svg',
@@ -588,7 +588,7 @@ export const getAppSettings = async () => {
         let data;
         if (snapshot.empty) {
             data = {
-                appName: 'जननी माता भजन मंडळ मोरावळे',
+                appName: 'अभंगमाला',
                 splashText: 'विठ्ठल विठ्ठल विठोबा हरी ॐ',
                 loginMessage: 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव घ्या',
                 primaryColor: '#FF6B35',
@@ -604,7 +604,7 @@ export const getAppSettings = async () => {
                 twitterUrl: '',
                 whatsappNumber: '',
                 // Branding fields
-                appTitle: 'जननी माता भजन मंडळ मोरावळे',
+                appTitle: 'अभंगमाला',
                 appDescription: 'भजन, अभंग आणि संतांच्या वाणीचा अनुभव',
                 faviconUrl: '/vite.svg',
                 appIcon192: '/pwa-icon.svg',
