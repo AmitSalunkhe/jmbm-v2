@@ -5,10 +5,13 @@ import { signInWithPopup, signInWithRedirect } from 'firebase/auth';
 import { useAuth } from '../context/AuthContext';
 import InstallButton from '../components/InstallButton';
 
+import { useAppSettings } from '../hooks/useAppSettings';
+
 const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { user } = useAuth();
+    const settings = useAppSettings();
 
     useEffect(() => {
         if (user) {
@@ -52,12 +55,16 @@ const Login = () => {
                 <div className="text-center mb-8">
                     <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center relative">
                         <div className="absolute inset-0 bg-[var(--color-maroon-main)] rounded-full opacity-10"></div>
-                        <div className="w-20 h-20 border-2 border-[var(--color-maroon-main)] rounded-full flex items-center justify-center bg-[var(--color-paper-card)] shadow-md">
-                            <span className="text-4xl">🙏</span>
+                        <div className="w-20 h-20 border-2 border-[var(--color-maroon-main)] rounded-full flex items-center justify-center bg-[var(--color-paper-card)] shadow-md overflow-hidden">
+                            {settings?.appIcon192 ? (
+                                <img src={settings.appIcon192} alt="App Logo" className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="text-4xl">🙏</span>
+                            )}
                         </div>
                     </div>
                     <h1 className="text-3xl font-bold text-[var(--color-maroon-main)] mb-2 drop-shadow-sm">
-                        जननी माता भजन मंडळ
+                        {settings?.appTitle || 'जननी माता भजन मंडळ'}
                     </h1>
                     <p className="text-[var(--color-ink-secondary)] font-medium border-b border-[var(--color-gold-accent)] inline-block pb-1">
                         मोरावळे
