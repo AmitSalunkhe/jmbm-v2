@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAppSettings, updateAppSettings } from '../../services/firestoreService';
 import { uploadImage } from '../../services/storageService';
-import { Save, Upload, Image as ImageIcon, Loader } from 'lucide-react';
+import { Save, Upload, Image as ImageIcon, Loader, Phone, Mail, Facebook, Instagram, Youtube, MessageCircle } from 'lucide-react';
 
 const AppSettings = () => {
     const [loading, setLoading] = useState(true);
@@ -11,7 +11,13 @@ const AppSettings = () => {
         appDescription: '',
         faviconUrl: '',
         appIcon192: '',
-        appIcon512: ''
+        appIcon512: '',
+        contactPhone: '',
+        contactEmail: '',
+        facebookUrl: '',
+        instagramUrl: '',
+        youtubeUrl: '',
+        whatsappNumber: ''
     });
 
     useEffect(() => {
@@ -218,6 +224,114 @@ const AppSettings = () => {
                                     </label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="bg-[var(--color-paper-card)] p-6 rounded-lg shadow-md border border-[var(--color-border-sepia)]">
+                    <h3 className="text-lg font-semibold text-[var(--color-maroon-main)] mb-4 flex items-center gap-2">
+                        <Phone size={20} />
+                        संपर्क माहिती (Contact Information)
+                    </h3>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--color-ink-primary)] mb-1 flex items-center gap-2">
+                                <Phone size={16} />
+                                फोन नंबर (Phone Number)
+                            </label>
+                            <input
+                                type="tel"
+                                name="contactPhone"
+                                value={settings.contactPhone}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-[var(--color-border-sepia)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--color-maroon-main)] bg-[var(--color-paper-base)]"
+                                placeholder="+91 1234567890"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--color-ink-primary)] mb-1 flex items-center gap-2">
+                                <Mail size={16} />
+                                ईमेल (Email)
+                            </label>
+                            <input
+                                type="email"
+                                name="contactEmail"
+                                value={settings.contactEmail}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-[var(--color-border-sepia)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--color-maroon-main)] bg-[var(--color-paper-base)]"
+                                placeholder="example@gmail.com"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Social Media Links */}
+                <div className="bg-[var(--color-paper-card)] p-6 rounded-lg shadow-md border border-[var(--color-border-sepia)]">
+                    <h3 className="text-lg font-semibold text-[var(--color-maroon-main)] mb-4">सोशल मीडिया (Social Media)</h3>
+
+                    <div className="grid gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--color-ink-primary)] mb-1 flex items-center gap-2">
+                                <Facebook size={16} className="text-blue-600" />
+                                Facebook URL
+                            </label>
+                            <input
+                                type="url"
+                                name="facebookUrl"
+                                value={settings.facebookUrl}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-[var(--color-border-sepia)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--color-maroon-main)] bg-[var(--color-paper-base)]"
+                                placeholder="https://facebook.com/yourpage"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--color-ink-primary)] mb-1 flex items-center gap-2">
+                                <Instagram size={16} className="text-pink-600" />
+                                Instagram URL
+                            </label>
+                            <input
+                                type="url"
+                                name="instagramUrl"
+                                value={settings.instagramUrl}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-[var(--color-border-sepia)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--color-maroon-main)] bg-[var(--color-paper-base)]"
+                                placeholder="https://instagram.com/yourprofile"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--color-ink-primary)] mb-1 flex items-center gap-2">
+                                <Youtube size={16} className="text-red-600" />
+                                YouTube URL
+                            </label>
+                            <input
+                                type="url"
+                                name="youtubeUrl"
+                                value={settings.youtubeUrl}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-[var(--color-border-sepia)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--color-maroon-main)] bg-[var(--color-paper-base)]"
+                                placeholder="https://youtube.com/@yourchannel"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--color-ink-primary)] mb-1 flex items-center gap-2">
+                                <MessageCircle size={16} className="text-green-600" />
+                                WhatsApp Number
+                            </label>
+                            <input
+                                type="tel"
+                                name="whatsappNumber"
+                                value={settings.whatsappNumber}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-[var(--color-border-sepia)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--color-maroon-main)] bg-[var(--color-paper-base)]"
+                                placeholder="919876543210"
+                            />
+                            <p className="text-xs text-[var(--color-ink-secondary)] mt-1">देश कोडसह नंबर टाका (उदा. 919876543210)</p>
                         </div>
                     </div>
                 </div>
