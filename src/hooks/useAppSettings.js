@@ -16,15 +16,27 @@ export const useAppSettings = () => {
                         document.title = data.appTitle;
                     }
 
-                    // Update favicon
-                    if (data.faviconUrl) {
+                    // Update favicon - use appIcon512 as fallback
+                    const faviconToUse = data.faviconUrl || data.appIcon512;
+                    if (faviconToUse) {
                         let link = document.querySelector("link[rel~='icon']");
                         if (!link) {
                             link = document.createElement('link');
                             link.rel = 'icon';
                             document.getElementsByTagName('head')[0].appendChild(link);
                         }
-                        link.href = data.faviconUrl;
+                        link.href = faviconToUse;
+
+                        // Set type based on extension
+                        if (faviconToUse.endsWith('.png')) {
+                            link.type = 'image/png';
+                        } else if (faviconToUse.endsWith('.jpg') || faviconToUse.endsWith('.jpeg')) {
+                            link.type = 'image/jpeg';
+                        } else if (faviconToUse.endsWith('.svg')) {
+                            link.type = 'image/svg+xml';
+                        } else if (faviconToUse.endsWith('.ico')) {
+                            link.type = 'image/x-icon';
+                        }
                     }
 
                     // Update PWA Manifest

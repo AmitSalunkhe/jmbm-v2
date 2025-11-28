@@ -44,12 +44,19 @@ const Sant = () => {
                     <span>परत जा</span>
                 </button>
 
-                <div className="bg-[var(--color-maroon-main)] text-[var(--color-paper-base)] p-6 rounded-lg mb-6 shadow-md border-2 border-[var(--color-gold-accent)] relative overflow-hidden">
+                <div className="bg-[var(--color-maroon-main)] text-[var(--color-paper-base)] p-6 rounded-lg mb-6 shadow-md border-2 border-[var(--color-gold-accent)] relative overflow-hidden flex items-center gap-6">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-[var(--color-gold-accent)] opacity-20 rounded-bl-full"></div>
-                    <h2 className="text-3xl font-bold mb-2 relative z-10">{selectedSant.name}</h2>
-                    {selectedSant.description && (
-                        <p className="text-[var(--color-paper-card)] opacity-90 relative z-10">{selectedSant.description}</p>
+                    {selectedSant.imageUrl && (
+                        <div className="w-24 h-24 rounded-full border-4 border-[var(--color-gold-accent)] overflow-hidden flex-shrink-0 bg-[var(--color-paper-base)] relative z-10">
+                            <img src={selectedSant.imageUrl} alt={selectedSant.name} className="w-full h-full object-cover" />
+                        </div>
                     )}
+                    <div className="relative z-10">
+                        <h2 className="text-3xl font-bold mb-2">{selectedSant.name}</h2>
+                        {selectedSant.description && (
+                            <p className="text-[var(--color-paper-card)] opacity-90">{selectedSant.description}</p>
+                        )}
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-2 mb-4 border-b border-[var(--color-border-sepia)] pb-2">
@@ -125,8 +132,12 @@ const Sant = () => {
 
                             <div className="flex items-center justify-between relative z-10">
                                 <div className="flex items-center space-x-4">
-                                    <div className="w-16 h-16 bg-[var(--color-paper-base)] rounded-full flex items-center justify-center border-2 border-[var(--color-border-sepia)] shadow-sm group-hover:border-[var(--color-maroon-main)] transition-colors">
-                                        <User size={32} className="text-[var(--color-maroon-main)]" />
+                                    <div className="w-16 h-16 bg-[var(--color-paper-base)] rounded-full flex items-center justify-center border-2 border-[var(--color-border-sepia)] shadow-sm group-hover:border-[var(--color-maroon-main)] transition-colors overflow-hidden">
+                                        {sant.imageUrl ? (
+                                            <img src={sant.imageUrl} alt={sant.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <User size={32} className="text-[var(--color-maroon-main)]" />
+                                        )}
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold text-[var(--color-ink-primary)] group-hover:text-[var(--color-maroon-main)] transition-colors">{sant.name}</h3>

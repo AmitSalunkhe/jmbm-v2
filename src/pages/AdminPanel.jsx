@@ -11,12 +11,13 @@ import {
     getMembers, addMember, updateMember, deleteMember
 } from '../services/firestoreService';
 import { useToast } from '../context/ToastContext';
-import { Plus, Edit2, Trash2, X, BookOpen, User, FolderOpen, Tag, Users, Settings, Calendar } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, BookOpen, User, FolderOpen, Tag, Users, Settings, Calendar, Loader, Image, Upload } from 'lucide-react';
 import TabNavigation from '../components/TabNavigation';
 import ConfirmDialog from '../components/ConfirmDialog';
 import Events from './admin/Events';
 import Members from './admin/Members';
 import AppSettings from './admin/AppSettings';
+import { uploadImage } from '../services/storageService';
 
 const AdminPanel = () => {
     const { showToast } = useToast();
@@ -39,6 +40,8 @@ const AdminPanel = () => {
 
     // Form data
     const [formData, setFormData] = useState({});
+    const [imageFile, setImageFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
 
     const tabs = [
         { id: 'bhajans', label: 'भजने', icon: <BookOpen size={18} /> },
@@ -115,7 +118,21 @@ const AdminPanel = () => {
                 await addBhajan({ ...formData, tags: formData.tags?.split(',').map(t => t.trim()).filter(t => t) || [] });
                 break;
             case 'saints':
-                await addSant(formData);
+                let santData = { ...formData };
+                if (imageFile) {
+                    setUploading(true);
+                    try {
+                        const imageUrl = await uploadImage(imageFile, `saints/${Date.now()}_${imageFile.name}`);
+                        santData.imageUrl = imageUrl;
+                    } catch (error) {
+                        console.error("Image upload failed:", error);
+                        showToast('Image upload failed', 'error');
+                        setUploading(false);
+                        return;
+                    }
+                    setUploading(false);
+                }
+                await addSant(santData);
                 break;
             case 'bhajanTypes':
                 await addBhajanType(formData);
@@ -140,7 +157,21 @@ const AdminPanel = () => {
                 await updateBhajan(editingItem.id, data);
                 break;
             case 'saints':
-                await updateSant(editingItem.id, data);
+                let updateData = { ...data };
+                if (imageFile) {
+                    setUploading(true);
+                    try {
+                        const imageUrl = await uploadImage(imageFile, `saints/${Date.now()}_${imageFile.name}`);
+                        updateData.imageUrl = imageUrl;
+                    } catch (error) {
+                        console.error("Image upload failed:", error);
+                        showToast('Image upload failed', 'error');
+                        setUploading(false);
+                        return;
+                    }
+                    setUploading(false);
+                }
+                await updateSant(editingItem.id, updateData);
                 break;
             case 'bhajanTypes':
                 await updateBhajanType(editingItem.id, data);
@@ -172,8 +203,10 @@ const AdminPanel = () => {
                 name: item.name || '',
                 description: item.description || '',
                 birthPlace: item.birthPlace || '',
-                era: item.era || ''
+                era: item.era || '',
+                imageUrl: item.imageUrl || ''
             });
+            setImageFile(null);
         } else if (activeTab === 'bhajanTypes' || activeTab === 'labels') {
             setFormData({
                 name: item.name || '',
@@ -340,6 +373,38 @@ const AdminPanel = () => {
                     )}
                     {activeTab === 'saints' && (
                         <>
+                            <div className="flex justify-center mb-6">
+                                <div className="relative w-32 h-32 rounded-full border-4 border-[var(--color-border-sepia)] overflow-hidden bg-[var(--color-paper-base)] shadow-md group">
+                                    {imageFile ? (
+                                        <img src={URL.createObjectURL(imageFile)} alt="Preview" className="w-full h-full object-cover" />
+                                    ) : formData.imageUrl ? (
+                                        <img src={formData.imageUrl} alt="Current" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-[var(--color-paper-card)]">
+                                            <User size={48} className="text-[var(--color-ink-secondary)] opacity-50" />
+                                        </div>
+                                    )}
+                                    <label className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center cursor-pointer transition-all">
+                                        <Upload className="text-white opacity-0 group-hover:opacity-100" size={24} />
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => setImageFile(e.target.files[0])}
+                                            className="hidden"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-[var(--color-ink-secondary)] mb-1">किंवा इमेज URL टाका (Optional)</label>
+                                <input
+                                    type="text"
+                                    placeholder="https://example.com/image.jpg"
+                                    value={formData.imageUrl || ''}
+                                    onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                                    className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]"
+                                />
+                            </div>
                             <input type="text" placeholder="नाव *" value={formData.name || ''} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]" />
                             <textarea placeholder="वर्णन" value={formData.description || ''} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows="3" className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]" />
                             <input type="text" placeholder="जन्मस्थान" value={formData.birthPlace || ''} onChange={(e) => setFormData({ ...formData, birthPlace: e.target.value })} className="w-full px-3 py-2 border rounded bg-[var(--color-paper-base)] border-[var(--color-border-sepia)]" />
@@ -364,7 +429,14 @@ const AdminPanel = () => {
                     )}
 
                     <div className="flex gap-3">
-                        <button type="submit" className="bg-[var(--color-maroon-main)] text-[var(--color-paper-base)] px-6 py-2 rounded hover:bg-[var(--color-maroon-light)] font-bold">{editingItem ? 'अपडेट करा' : 'जोडा'}</button>
+                        <button
+                            type="submit"
+                            disabled={uploading}
+                            className="bg-[var(--color-maroon-main)] text-[var(--color-paper-base)] px-6 py-2 rounded hover:bg-[var(--color-maroon-light)] font-bold disabled:opacity-50 flex items-center gap-2"
+                        >
+                            {uploading ? <Loader className="animate-spin" size={18} /> : null}
+                            {uploading ? 'अपलोड करत आहे...' : (editingItem ? 'अपडेट करा' : 'जोडा')}
+                        </button>
                         <button type="button" onClick={resetForm} className="bg-[var(--color-paper-base)] text-[var(--color-ink-primary)] px-6 py-2 rounded hover:bg-[var(--color-paper-card)] border border-[var(--color-border-sepia)]">रद्द करा</button>
                     </div>
                 </form>

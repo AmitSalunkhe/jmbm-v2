@@ -1,6 +1,13 @@
 import React from 'react';
 
+import { useAppSettings } from '../hooks/useAppSettings';
+
 const Splash = () => {
+    const settings = useAppSettings();
+
+    const appTitle = settings?.appTitle || 'जननी माता भजन मंडळ';
+    const appIcon = settings?.appIcon512 || null;
+
     return (
         <div className="min-h-screen bg-[var(--color-paper-base)] flex items-center justify-center p-4 relative overflow-hidden">
             {/* Decorative Corner Borders */}
@@ -14,16 +21,21 @@ const Splash = () => {
 
             <div className="text-center animate-fade-in relative z-10">
                 {/* Icon Container */}
+                {/* Icon Container */}
                 <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center relative">
                     <div className="absolute inset-0 bg-[var(--color-maroon-main)] rounded-full opacity-10 animate-pulse"></div>
-                    <div className="w-28 h-28 border-4 border-[var(--color-maroon-main)] rounded-full flex items-center justify-center bg-[var(--color-paper-card)] shadow-xl animate-scale-in">
-                        <span className="text-5xl filter drop-shadow-sm">🙏</span>
+                    <div className="w-28 h-28 border-4 border-[var(--color-maroon-main)] rounded-full flex items-center justify-center bg-[var(--color-paper-card)] shadow-xl animate-scale-in overflow-hidden">
+                        {appIcon ? (
+                            <img src={appIcon} alt="App Icon" className="w-full h-full object-cover" />
+                        ) : (
+                            <span className="text-5xl filter drop-shadow-sm">🙏</span>
+                        )}
                     </div>
                 </div>
 
                 {/* Title */}
                 <h1 className="text-4xl font-bold text-[var(--color-maroon-main)] mb-3 animate-slide-up tracking-wide drop-shadow-sm">
-                    जननी माता भजन मंडळ
+                    {appTitle}
                 </h1>
 
                 {/* Subtitle */}
