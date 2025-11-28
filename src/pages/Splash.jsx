@@ -10,42 +10,48 @@ const Splash = () => {
 
     return (
         <div className="min-h-screen bg-[var(--color-paper-base)] flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Radial Gradient Overlay */}
+            <div className="absolute inset-0 bg-radial-gradient from-transparent to-[var(--color-paper-base)] opacity-80 pointer-events-none"></div>
+
             {/* Decorative Corner Borders */}
-            <div className="absolute top-4 left-4 w-16 h-16 border-t-4 border-l-4 border-[var(--color-maroon-main)] rounded-tl-3xl opacity-80"></div>
-            <div className="absolute top-4 right-4 w-16 h-16 border-t-4 border-r-4 border-[var(--color-maroon-main)] rounded-tr-3xl opacity-80"></div>
-            <div className="absolute bottom-4 left-4 w-16 h-16 border-b-4 border-l-4 border-[var(--color-maroon-main)] rounded-bl-3xl opacity-80"></div>
-            <div className="absolute bottom-4 right-4 w-16 h-16 border-b-4 border-r-4 border-[var(--color-maroon-main)] rounded-br-3xl opacity-80"></div>
+            <div className="absolute top-6 left-6 w-24 h-24 border-t-4 border-l-4 border-[var(--color-maroon-main)] rounded-tl-3xl opacity-60"></div>
+            <div className="absolute top-6 right-6 w-24 h-24 border-t-4 border-r-4 border-[var(--color-maroon-main)] rounded-tr-3xl opacity-60"></div>
+            <div className="absolute bottom-6 left-6 w-24 h-24 border-b-4 border-l-4 border-[var(--color-maroon-main)] rounded-bl-3xl opacity-60"></div>
+            <div className="absolute bottom-6 right-6 w-24 h-24 border-b-4 border-r-4 border-[var(--color-maroon-main)] rounded-br-3xl opacity-60"></div>
 
             {/* Inner Border Frame */}
-            <div className="absolute inset-3 border-2 border-[var(--color-border-sepia)] opacity-30 pointer-events-none"></div>
+            <div className="absolute inset-4 border border-[var(--color-border-sepia)] opacity-20 pointer-events-none rounded-lg"></div>
 
             <div className="text-center animate-fade-in relative z-10">
-                {/* Icon Container */}
-                {/* Icon Container */}
-                <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center relative">
-                    <div className="absolute inset-0 bg-[var(--color-maroon-main)] rounded-full opacity-10 animate-pulse"></div>
-                    <div className="w-28 h-28 border-4 border-[var(--color-maroon-main)] rounded-full flex items-center justify-center bg-[var(--color-paper-card)] shadow-xl animate-scale-in overflow-hidden">
+                {/* Icon Container with Glow */}
+                <div className="w-40 h-40 mx-auto mb-8 flex items-center justify-center relative">
+                    {/* Pulsing Glow Behind */}
+                    <div className="absolute inset-0 bg-[var(--color-gold-accent)] rounded-full opacity-20 animate-glow blur-xl"></div>
+
+                    <div className="w-32 h-32 border-4 border-[var(--color-maroon-main)] rounded-full flex items-center justify-center bg-[var(--color-paper-card)] shadow-2xl animate-float overflow-hidden relative z-10">
                         {settings?.appIcon192 ? (
                             <img src={settings.appIcon192} alt="App Logo" className="w-full h-full object-cover" />
                         ) : (
-                            <span className="text-4xl">🙏</span>
+                            <span className="text-5xl">🙏</span>
                         )}
                     </div>
                 </div>
 
                 {/* Title */}
-                <h1 className="text-4xl font-bold text-[var(--color-maroon-main)] mb-3 animate-slide-up tracking-wide drop-shadow-sm">
+                <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-maroon-main)] mb-4 animate-slide-up tracking-wide drop-shadow-md font-marathi">
                     {appTitle}
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-xl text-[var(--color-ink-secondary)] font-medium animate-slide-up-delay border-b-2 border-[var(--color-gold-accent)] inline-block pb-1 px-4">
-                    {settings?.appSubtitle || 'मोरावळे'}
-                </p>
+                <div className="animate-slide-up-delay">
+                    <p className="text-xl md:text-2xl text-[var(--color-ink-secondary)] font-medium border-b-2 border-[var(--color-gold-accent)] inline-block pb-2 px-6">
+                        {settings?.appSubtitle || 'मोरावळे'}
+                    </p>
+                </div>
 
                 {/* Footer Mantra */}
-                <div className="mt-12">
-                    <p className="text-[var(--color-ink-primary)] text-lg font-semibold animate-pulse tracking-wider">
+                <div className="mt-16 opacity-0 animate-fade-in" style={{ animationDelay: '1s', animationFillMode: 'forwards' }}>
+                    <p className="text-[var(--color-ink-primary)] text-lg font-bold tracking-widest uppercase opacity-80">
                         || रामकृष्णहरी माऊली ||
                     </p>
                 </div>
