@@ -1,6 +1,9 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta';
 
+// Import Panchang service for accurate Tithi
+import { getTithi } from './panchangService';
+
 export const testConnection = async () => {
     try {
         if (!GEMINI_API_KEY) return { success: false, error: 'API Key Missing' };
@@ -78,21 +81,29 @@ export const generateDailyContent = async () => {
     try {
         if (!GEMINI_API_KEY) throw new Error('API Key Missing');
 
+        // Step 1: Fetch accurate Tithi from Panchang API
+        const today = new Date();
+        const tithiResult = await getTithi(today, {
+            latitude: 19.2056,  // Mumbai coordinates (default)
+            longitude: 72.8347,
+            timezone: 5.5
+        });
+
+        const accurateTithi = tithiResult.success ? tithiResult.tithi : fallbackData.tithi;
+
+        // Step 2: Ask Gemini for Abhang and Meaning (NOT Tithi)
         const prompt = `
 आज च्या दिवसासाठी खालील माहिती मराठी मध्ये द्या. कृपया संपूर्ण आणि तपशीलवार माहिती द्या.
-आजची तारीख: ${new Date().toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+आजची तारीख: ${today.toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+आजची तिथी: ${accurateTithi}
 
 कृपया खालील माहिती JSON format मध्ये द्या:
-1. **gregorianDate**: आजची तारीख मराठी मध्ये
-2. **tithi**: आजची अचूक मराठी पंचांग तिथी
-3. **abhang**: वारकरी संप्रदायातील एक **संपूर्ण** अभंग (कमीत कमी ४-६ ओळी).
-4. **meaning**: त्या अभंगाचा **संपूर्ण** अर्थ मराठी मध्ये.
-5. **sant**: कोणत्या संताने हे अभंग लिहिले
+1. **abhang**: वारकरी संप्रदायातील एक **संपूर्ण** अभंग (कमीत कमी ४-६ ओळी). संत ज्ञानेश्वर, संत तुकाराम, संत नामदेव, संत एकनाथ यांपैकी कोणाचेही प्रसिद्ध अभंग द्या.
+2. **meaning**: त्या अभंगाचा **संपूर्ण** अर्थ मराठी मध्ये (कमीत कमी ३-४ वाक्ये).
+3. **sant**: कोणत्या संताने हे अभंग लिहिले (पूर्ण नाव)
 
-JSON format:
+JSON format (फक्त हे उत्तर द्या):
 {
-  "gregorianDate": "...",
-  "tithi": "...",
   "abhang": "...",
   "meaning": "...",
   "sant": "..."
@@ -119,8 +130,18 @@ JSON format:
         const jsonMatch = text.match(/\{[\s\S]*\}/);
         if (!jsonMatch) throw new Error('Invalid JSON format');
 
-        const content = JSON.parse(jsonMatch[0]);
-        return { success: true, data: content };
+        const geminiContent = JSON.parse(jsonMatch[0]);
+
+        // Step 3: Combine Panchang Tithi with Gemini Abhang
+        const finalContent = {
+            gregorianDate: today.toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+            tithi: accurateTithi, // From Panchang API
+            abhang: geminiContent.abhang,
+            meaning: geminiContent.meaning,
+            sant: geminiContent.sant
+        };
+
+        return { success: true, data: finalContent };
 
     } catch (error) {
         console.error('Error generating daily content (Using Fallback):', error);
